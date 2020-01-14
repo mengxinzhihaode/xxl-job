@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.xuxueli</groupId>
-	<artifactId>xxl-job</artifactId>
+	<groupId>com.glodon</groupId>
+	<artifactId>glodon-job</artifactId>
 	<version>1.0.0</version>
 	<packaging>pom</packaging>
 
@@ -11,9 +11,9 @@
 	<url>https://www.xuxueli.com/</url>
 
 	<modules>
-		<module>xxl-job-core</module>
-		<module>xxl-job-admin</module>
-		<module>xxl-job-executor-samples</module>
+		<module>glodon-job-core</module>
+		<module>glodon-job-admin</module>
+		<module>glodon-job-executor-samples</module>
     </modules>
 
 	<properties>
