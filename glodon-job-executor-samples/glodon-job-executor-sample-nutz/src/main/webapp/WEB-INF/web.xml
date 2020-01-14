@@ -16,7 +16,7 @@
 		<filter-class>org.nutz.mvc.NutFilter</filter-class>
 		<init-param>
 			<param-name>modules</param-name>
-			<param-value>com.xuxueli.executor.sample.nutz.MainModule</param-value>
+			<param-value>com.glodon.executor.sample.nutz.MainModule</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>

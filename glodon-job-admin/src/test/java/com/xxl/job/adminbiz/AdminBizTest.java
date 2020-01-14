@@ -1,11 +1,11 @@
 package com.xxl.job.adminbiz;
 
-import com.xxl.job.core.biz.AdminBiz;
-import com.xxl.job.core.biz.client.AdminBizClient;
-import com.xxl.job.core.biz.model.HandleCallbackParam;
-import com.xxl.job.core.biz.model.RegistryParam;
-import com.xxl.job.core.biz.model.ReturnT;
-import com.xxl.job.core.enums.RegistryConfig;
+import com.glodon.job.core.biz.AdminBiz;
+import com.glodon.job.core.biz.client.AdminBizClient;
+import com.glodon.job.core.biz.model.HandleCallbackParam;
+import com.glodon.job.core.biz.model.RegistryParam;
+import com.glodon.job.core.biz.model.ReturnT;
+import com.glodon.job.core.enums.RegistryConfig;
 import org.junit.Assert;
 import org.junit.Test;
 
