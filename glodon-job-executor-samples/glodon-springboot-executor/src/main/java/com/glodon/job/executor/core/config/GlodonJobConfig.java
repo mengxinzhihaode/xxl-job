@@ -7,39 +7,34 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * xxl-job config
- *
- * @author xuxueli 2017-04-28
- */
 @Configuration
 public class GlodonJobConfig {
     private Logger logger = LoggerFactory.getLogger(GlodonJobConfig.class);
 
-    @Value("${xxl.job.admin.addresses}")
+    @Value("${glodon.job.admin.addresses}")
     private String adminAddresses;
 
-    @Value("${xxl.job.executor.appname}")
+    @Value("${glodon.job.executor.appname}")
     private String appName;
 
-    @Value("${xxl.job.executor.ip}")
+    @Value("${glodon.job.executor.ip}")
     private String ip;
 
-    @Value("${xxl.job.executor.port}")
+    @Value("${glodon.job.executor.port}")
     private int port;
 
-    @Value("${xxl.job.accessToken}")
+    @Value("${glodon.job.accessToken}")
     private String accessToken;
 
-    @Value("${xxl.job.executor.logpath}")
+    @Value("${glodon.job.executor.logpath}")
     private String logPath;
 
-    @Value("${xxl.job.executor.logretentiondays}")
+    @Value("${glodon.job.executor.logretentiondays}")
     private int logRetentionDays;
 
 
     @Bean
-    public GlodonJobSpringExecutor xxlJobExecutor() {
+    public GlodonJobSpringExecutor glodonJobExecutor() {
         logger.info(">>>>>>>>>>> glodon-job config init.");
         GlodonJobSpringExecutor xxlJobSpringExecutor = new GlodonJobSpringExecutor();
         xxlJobSpringExecutor.setAdminAddresses(adminAddresses);

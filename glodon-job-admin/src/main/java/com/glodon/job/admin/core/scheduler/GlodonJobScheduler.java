@@ -16,9 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-/**
- * @author xuxueli 2018-10-28 00:18:17
- */
 
 public class GlodonJobScheduler  {
     private static final Logger logger = LoggerFactory.getLogger(GlodonJobScheduler.class);

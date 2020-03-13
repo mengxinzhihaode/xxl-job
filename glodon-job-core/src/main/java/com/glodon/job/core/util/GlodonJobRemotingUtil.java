@@ -15,12 +15,10 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Map;
 
-/**
- * @author xuxueli 2018-11-25 00:55:31
- */
-public class XxlJobRemotingUtil {
-    private static Logger logger = LoggerFactory.getLogger(XxlJobRemotingUtil.class);
-    public static String XXL_RPC_ACCESS_TOKEN = "XXL-RPC-ACCESS-TOKEN";
+
+public class GlodonJobRemotingUtil {
+    private static Logger logger = LoggerFactory.getLogger(GlodonJobRemotingUtil.class);
+    public static String GLODON_RPC_ACCESS_TOKEN = "XXL-RPC-ACCESS-TOKEN";
 
 
     // trust-https start
@@ -87,7 +85,7 @@ public class XxlJobRemotingUtil {
             connection.setRequestProperty("Accept-Charset", "application/json;charset=UTF-8");
 
             if(accessToken!=null && accessToken.trim().length()>0){
-                connection.setRequestProperty(XXL_RPC_ACCESS_TOKEN, accessToken);
+                connection.setRequestProperty(GLODON_RPC_ACCESS_TOKEN, accessToken);
             }
 
             // do connection

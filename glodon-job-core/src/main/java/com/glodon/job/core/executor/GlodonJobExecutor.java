@@ -24,9 +24,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-/**
- * Created by xuxueli on 2016/3/2 21:14.
- */
 public class GlodonJobExecutor {
     private static final Logger logger = LoggerFactory.getLogger(GlodonJobExecutor.class);
 

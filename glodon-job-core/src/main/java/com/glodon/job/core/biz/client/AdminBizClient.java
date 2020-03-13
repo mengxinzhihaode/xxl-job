@@ -4,14 +4,13 @@ import com.glodon.job.core.biz.AdminBiz;
 import com.glodon.job.core.biz.model.HandleCallbackParam;
 import com.glodon.job.core.biz.model.RegistryParam;
 import com.glodon.job.core.biz.model.ReturnT;
-import com.glodon.job.core.util.XxlJobRemotingUtil;
+import com.glodon.job.core.util.GlodonJobRemotingUtil;
 
 import java.util.List;
 
 /**
  * admin api test
  *
- * @author xuxueli 2017-07-28 22:14:52
  */
 public class AdminBizClient implements AdminBiz {
 
@@ -33,16 +32,16 @@ public class AdminBizClient implements AdminBiz {
 
     @Override
     public ReturnT<String> callback(List<HandleCallbackParam> callbackParamList) {
-        return XxlJobRemotingUtil.postBody(addressUrl+"api/callback", accessToken, callbackParamList, 3);
+        return GlodonJobRemotingUtil.postBody(addressUrl+"api/callback", accessToken, callbackParamList, 3);
     }
 
     @Override
     public ReturnT<String> registry(RegistryParam registryParam) {
-        return XxlJobRemotingUtil.postBody(addressUrl + "api/registry", accessToken, registryParam, 3);
+        return GlodonJobRemotingUtil.postBody(addressUrl + "api/registry", accessToken, registryParam, 3);
     }
 
     @Override
     public ReturnT<String> registryRemove(RegistryParam registryParam) {
-        return XxlJobRemotingUtil.postBody(addressUrl + "api/registryRemove", accessToken, registryParam, 3);
+        return GlodonJobRemotingUtil.postBody(addressUrl + "api/registryRemove", accessToken, registryParam, 3);
     }
 }

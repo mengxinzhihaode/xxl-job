@@ -75,7 +75,6 @@ public class GlodonJobSpringExecutor extends GlodonJobExecutor implements Applic
         if (applicationContext == null) {
             return;
         }
-
         // init job handler from method
         String[] beanDefinitionNames = applicationContext.getBeanDefinitionNames();
         for (String beanDefinitionName : beanDefinitionNames) {

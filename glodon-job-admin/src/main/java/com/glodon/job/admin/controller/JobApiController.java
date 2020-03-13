@@ -8,7 +8,7 @@ import com.glodon.job.core.biz.AdminBiz;
 import com.glodon.job.core.biz.model.HandleCallbackParam;
 import com.glodon.job.core.biz.model.RegistryParam;
 import com.glodon.job.core.biz.model.ReturnT;
-import com.glodon.job.core.util.XxlJobRemotingUtil;
+import com.glodon.job.core.util.GlodonJobRemotingUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +37,7 @@ public class JobApiController {
     private void validAccessToken(HttpServletRequest request){
         if (GlodonJobAdminConfig.getAdminConfig().getAccessToken()!=null
                 && GlodonJobAdminConfig.getAdminConfig().getAccessToken().trim().length()>0
-                && !GlodonJobAdminConfig.getAdminConfig().getAccessToken().equals(request.getHeader(XxlJobRemotingUtil.XXL_RPC_ACCESS_TOKEN))) {
+                && !GlodonJobAdminConfig.getAdminConfig().getAccessToken().equals(request.getHeader(GlodonJobRemotingUtil.GLODON_RPC_ACCESS_TOKEN))) {
             throw new GlodonJobException("The access token is wrong.");
         }
     }
