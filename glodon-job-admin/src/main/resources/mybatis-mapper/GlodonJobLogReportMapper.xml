@@ -20,7 +20,7 @@
 	</sql>
 	
 	<insert id="save" parameterType="com.glodon.job.admin.core.model.GlodonJobLogReport" useGeneratedKeys="true" keyProperty="id" >
-		INSERT INTO xxl_job_log_report (
+		INSERT INTO glodon_job_log_report (
 			`trigger_day`,
 			`running_count`,
 			`suc_count`,
@@ -37,7 +37,7 @@
 	</insert>
 
 	<update id="update" >
-        UPDATE xxl_job_log_report
+        UPDATE glodon_job_log_report
         SET `running_count` = #{runningCount},
         	`suc_count` = #{sucCount},
         	`fail_count` = #{failCount}
@@ -46,7 +46,7 @@
 
 	<select id="queryLogReport" resultMap="XxlJobLogReport">
 		SELECT <include refid="Base_Column_List" />
-		FROM xxl_job_log_report AS t
+		FROM glodon_job_log_report AS t
 		WHERE t.trigger_day between #{triggerDayFrom} and #{triggerDayTo}
 		ORDER BY t.trigger_day ASC
 	</select>
@@ -56,7 +56,7 @@
 			SUM(running_count) running_count,
 			SUM(suc_count) suc_count,
 			SUM(fail_count) fail_count
-		FROM xxl_job_log_report AS t
+		FROM glodon_job_log_report AS t
 	</select>
 
 </mapper>

@@ -23,24 +23,24 @@
 
 	<select id="findAll" resultMap="XxlJobGroup">
 		SELECT <include refid="Base_Column_List" />
-		FROM xxl_job_group AS t
+		FROM glodon_job_group AS t
 		ORDER BY t.order ASC
 	</select>
 
 	<select id="findByAddressType" parameterType="java.lang.Integer" resultMap="XxlJobGroup">
 		SELECT <include refid="Base_Column_List" />
-		FROM xxl_job_group AS t
+		FROM glodon_job_group AS t
 		WHERE t.address_type = #{addressType}
 		ORDER BY t.order ASC
 	</select>
 
 	<insert id="save" parameterType="com.glodon.job.admin.core.model.GlodonJobGroup" useGeneratedKeys="true" keyProperty="id" >
-		INSERT INTO xxl_job_group ( `app_name`, `title`, `order`, `address_type`, `address_list`)
+		INSERT INTO glodon_job_group ( `app_name`, `title`, `order`, `address_type`, `address_list`)
 		values ( #{appName}, #{title}, #{order}, #{addressType}, #{addressList});
 	</insert>
 
 	<update id="update" parameterType="com.glodon.job.admin.core.model.GlodonJobGroup" >
-		UPDATE xxl_job_group
+		UPDATE glodon_job_group
 		SET `app_name` = #{appName},
 			`title` = #{title},
 			`order` = #{order},
@@ -50,13 +50,13 @@
 	</update>
 
 	<delete id="remove" parameterType="java.lang.Integer" >
-		DELETE FROM xxl_job_group
+		DELETE FROM glodon_job_group
 		WHERE id = #{id}
 	</delete>
 
 	<select id="load" parameterType="java.lang.Integer" resultMap="XxlJobGroup">
 		SELECT <include refid="Base_Column_List" />
-		FROM xxl_job_group AS t
+		FROM glodon_job_group AS t
 		WHERE t.id = #{id}
 	</select>
 

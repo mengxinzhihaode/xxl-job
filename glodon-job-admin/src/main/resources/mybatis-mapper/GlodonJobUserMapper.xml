@@ -21,7 +21,7 @@
 
 	<select id="pageList" parameterType="java.util.HashMap" resultMap="XxlJobUser">
 		SELECT <include refid="Base_Column_List" />
-		FROM xxl_job_user AS t
+		FROM glodon_job_user AS t
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
 			<if test="username != null and username != ''">
 				AND t.username like CONCAT(CONCAT('%', #{username}), '%')
@@ -36,7 +36,7 @@
 
 	<select id="pageListCount" parameterType="java.util.HashMap" resultType="int">
 		SELECT count(1)
-		FROM xxl_job_user AS t
+		FROM glodon_job_user AS t
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
 			<if test="username != null and username != ''">
 				AND t.username like CONCAT(CONCAT('%', #{username}), '%')
@@ -49,12 +49,12 @@
 
 	<select id="loadByUserName" parameterType="java.util.HashMap" resultMap="XxlJobUser">
 		SELECT <include refid="Base_Column_List" />
-		FROM xxl_job_user AS t
+		FROM glodon_job_user AS t
 		WHERE t.username = #{username}
 	</select>
 
 	<insert id="save" parameterType="com.glodon.job.admin.core.model.GlodonJobUser" useGeneratedKeys="true" keyProperty="id" >
-		INSERT INTO xxl_job_user (
+		INSERT INTO glodon_job_user (
 			username,
 			password,
 			role,
@@ -68,7 +68,7 @@
 	</insert>
 
 	<update id="update" parameterType="com.glodon.job.admin.core.model.GlodonJobUser" >
-		UPDATE xxl_job_user
+		UPDATE glodon_job_user
 		SET
 			<if test="password != null and password != ''">
 				password = #{password},
@@ -80,7 +80,7 @@
 
 	<delete id="delete" parameterType="java.util.HashMap">
 		DELETE
-		FROM xxl_job_user
+		FROM glodon_job_user
 		WHERE id = #{id}
 	</delete>
 
