@@ -2,8 +2,9 @@ package com.glodon.job.core.handler.impl;
 
 import com.glodon.job.core.biz.model.ReturnT;
 import com.glodon.job.core.glue.GlueTypeEnum;
-import com.glodon.job.core.log.XxlJobFileAppender;
-import com.glodon.job.core.log.XxlJobLogger;
+
+import com.glodon.job.core.log.GlodonJobFileAppender;
+import com.glodon.job.core.log.GlodonJobLogger;
 import com.glodon.job.core.util.ScriptUtil;
 import com.glodon.job.core.util.ShardingUtil;
 import com.glodon.job.core.handler.IJobHandler;
@@ -27,7 +28,7 @@ public class ScriptJobHandler extends IJobHandler {
         this.glueType = glueType;
 
         // clean old script file
-        File glueSrcPath = new File(XxlJobFileAppender.getGlueSrcPath());
+        File glueSrcPath = new File(GlodonJobFileAppender.getGlueSrcPath());
         if (glueSrcPath.exists()) {
             File[] glueSrcFileList = glueSrcPath.listFiles();
             if (glueSrcFileList!=null && glueSrcFileList.length>0) {
@@ -56,7 +57,7 @@ public class ScriptJobHandler extends IJobHandler {
         String cmd = glueType.getCmd();
 
         // make script file
-        String scriptFileName = XxlJobFileAppender.getGlueSrcPath()
+        String scriptFileName = GlodonJobFileAppender.getGlueSrcPath()
                 .concat(File.separator)
                 .concat(String.valueOf(jobId))
                 .concat("_")
@@ -68,7 +69,7 @@ public class ScriptJobHandler extends IJobHandler {
         }
 
         // log file
-        String logFileName = XxlJobFileAppender.contextHolder.get();
+        String logFileName = GlodonJobFileAppender.contextHolder.get();
 
         // script params：0=param、1=分片序号、2=分片总数
         ShardingUtil.ShardingVO shardingVO = ShardingUtil.getShardingVo();
@@ -78,7 +79,7 @@ public class ScriptJobHandler extends IJobHandler {
         scriptParams[2] = String.valueOf(shardingVO.getTotal());
 
         // invoke
-        XxlJobLogger.log("----------- script file:"+ scriptFileName +" -----------");
+        GlodonJobLogger.log("----------- script file:"+ scriptFileName +" -----------");
         int exitValue = ScriptUtil.execToFile(cmd, scriptFileName, logFileName, scriptParams);
 
         if (exitValue == 0) {

@@ -2,7 +2,7 @@ package com.glodon.executor.sample.nutz.jobhandler;
 
 import com.glodon.job.core.biz.model.ReturnT;
 import com.glodon.job.core.handler.IJobHandler;
-import com.glodon.job.core.log.XxlJobLogger;
+import com.glodon.job.core.log.GlodonJobLogger;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -30,14 +30,14 @@ public class CommandJobHandler extends IJobHandler {
             // command log
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                XxlJobLogger.log(line);
+                GlodonJobLogger.log(line);
             }
 
             // command exit
             process.waitFor();
             exitValue = process.exitValue();
         } catch (Exception e) {
-            XxlJobLogger.log(e);
+            GlodonJobLogger.log(e);
         } finally {
             if (bufferedReader != null) {
                 bufferedReader.close();

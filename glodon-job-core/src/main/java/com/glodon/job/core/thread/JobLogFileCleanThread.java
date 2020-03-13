@@ -1,6 +1,6 @@
 package com.glodon.job.core.thread;
 
-import com.glodon.job.core.log.XxlJobFileAppender;
+import com.glodon.job.core.log.GlodonJobFileAppender;
 import com.glodon.job.core.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ public class JobLogFileCleanThread {
                 while (!toStop) {
                     try {
                         // clean log dir, over logRetentionDays
-                        File[] childDirs = new File(XxlJobFileAppender.getLogPath()).listFiles();
+                        File[] childDirs = new File(GlodonJobFileAppender.getLogPath()).listFiles();
                         if (childDirs!=null && childDirs.length>0) {
 
                             // today

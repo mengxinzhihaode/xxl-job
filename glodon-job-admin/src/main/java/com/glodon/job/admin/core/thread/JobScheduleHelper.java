@@ -1,8 +1,8 @@
 package com.glodon.job.admin.core.thread;
 
-import com.glodon.job.admin.core.conf.XxlJobAdminConfig;
+import com.glodon.job.admin.core.conf.GlodonJobAdminConfig;
 import com.glodon.job.admin.core.cron.CronExpression;
-import com.glodon.job.admin.core.model.XxlJobInfo;
+import com.glodon.job.admin.core.model.GlodonJobInfo;
 import com.glodon.job.admin.core.trigger.TriggerTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,10 +48,10 @@ public class JobScheduleHelper {
                         logger.error(e.getMessage(), e);
                     }
                 }
-                logger.info(">>>>>>>>> init xxl-job admin scheduler success.");
+                logger.info(">>>>>>>>> init glod-job admin scheduler success.");
 
                 // pre-read count: treadpool-size * trigger-qps (each trigger cost 50ms, qps = 1000/50 = 20)
-                int preReadCount = (XxlJobAdminConfig.getAdminConfig().getTriggerPoolFastMax() + XxlJobAdminConfig.getAdminConfig().getTriggerPoolSlowMax()) * 20;
+                int preReadCount = (GlodonJobAdminConfig.getAdminConfig().getTriggerPoolFastMax() + GlodonJobAdminConfig.getAdminConfig().getTriggerPoolSlowMax()) * 20;
 
                 while (!scheduleThreadToStop) {
 
@@ -65,7 +65,7 @@ public class JobScheduleHelper {
                     boolean preReadSuc = true;
                     try {
 
-                        conn = XxlJobAdminConfig.getAdminConfig().getDataSource().getConnection();
+                        conn = GlodonJobAdminConfig.getAdminConfig().getDataSource().getConnection();
                         connAutoCommit = conn.getAutoCommit();
                         conn.setAutoCommit(false);
 
@@ -76,15 +76,15 @@ public class JobScheduleHelper {
 
                         // 1、pre read
                         long nowTime = System.currentTimeMillis();
-                        List<XxlJobInfo> scheduleList = XxlJobAdminConfig.getAdminConfig().getXxlJobInfoDao().scheduleJobQuery(nowTime + PRE_READ_MS, preReadCount);
+                        List<GlodonJobInfo> scheduleList = GlodonJobAdminConfig.getAdminConfig().getGlodonJobInfoDao().scheduleJobQuery(nowTime + PRE_READ_MS, preReadCount);
                         if (scheduleList!=null && scheduleList.size()>0) {
                             // 2、push time-ring
-                            for (XxlJobInfo jobInfo: scheduleList) {
+                            for (GlodonJobInfo jobInfo: scheduleList) {
 
                                 // time-ring jump
                                 if (nowTime > jobInfo.getTriggerNextTime() + PRE_READ_MS) {
                                     // 2.1、trigger-expire > 5s：pass && make next-trigger-time
-                                    logger.warn(">>>>>>>>>>> xxl-job, schedule misfire, jobId = " + jobInfo.getId());
+                                    logger.warn(">>>>>>>>>>> glod-job, schedule misfire, jobId = " + jobInfo.getId());
 
                                     // fresh next
                                     refreshNextValidTime(jobInfo, new Date());
@@ -94,7 +94,7 @@ public class JobScheduleHelper {
 
                                     // 1、trigger
                                     JobTriggerPoolHelper.trigger(jobInfo.getId(), TriggerTypeEnum.CRON, -1, null, null);
-                                    logger.debug(">>>>>>>>>>> xxl-job, schedule push trigger : jobId = " + jobInfo.getId() );
+                                    logger.debug(">>>>>>>>>>> glod-job, schedule push trigger : jobId = " + jobInfo.getId() );
 
                                     // 2、fresh next
                                     refreshNextValidTime(jobInfo, new Date());
@@ -130,8 +130,8 @@ public class JobScheduleHelper {
                             }
 
                             // 3、update trigger info
-                            for (XxlJobInfo jobInfo: scheduleList) {
-                                XxlJobAdminConfig.getAdminConfig().getXxlJobInfoDao().scheduleUpdate(jobInfo);
+                            for (GlodonJobInfo jobInfo: scheduleList) {
+                                GlodonJobAdminConfig.getAdminConfig().getGlodonJobInfoDao().scheduleUpdate(jobInfo);
                             }
 
                         } else {
@@ -200,11 +200,11 @@ public class JobScheduleHelper {
 
                 }
 
-                logger.info(">>>>>>>>>>> xxl-job, JobScheduleHelper#scheduleThread stop");
+                logger.info(">>>>>>>>>>> glod-job, JobScheduleHelper#scheduleThread stop");
             }
         });
         scheduleThread.setDaemon(true);
-        scheduleThread.setName("xxl-job, admin JobScheduleHelper#scheduleThread");
+        scheduleThread.setName("glod-job, admin JobScheduleHelper#scheduleThread");
         scheduleThread.start();
 
 
@@ -269,7 +269,7 @@ public class JobScheduleHelper {
         ringThread.start();
     }
 
-    private void refreshNextValidTime(XxlJobInfo jobInfo, Date fromTime) throws ParseException {
+    private void refreshNextValidTime(GlodonJobInfo jobInfo, Date fromTime) throws ParseException {
         Date nextValidTime = new CronExpression(jobInfo.getJobCron()).getNextValidTimeAfter(fromTime);
         if (nextValidTime != null) {
             jobInfo.setTriggerLastTime(jobInfo.getTriggerNextTime());

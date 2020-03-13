@@ -1,6 +1,6 @@
 package com.glodon.job.admin.controller.resolver;
 
-import com.glodon.job.admin.core.exception.XxlJobException;
+import com.glodon.job.admin.core.exception.GlodonJobException;
 import com.glodon.job.admin.core.util.JacksonUtil;
 import com.glodon.job.core.biz.model.ReturnT;
 import org.slf4j.Logger;
@@ -28,7 +28,7 @@ public class WebExceptionResolver implements HandlerExceptionResolver {
 	public ModelAndView resolveException(HttpServletRequest request,
 			HttpServletResponse response, Object handler, Exception ex) {
 
-		if (!(ex instanceof XxlJobException)) {
+		if (!(ex instanceof GlodonJobException)) {
 			logger.error("WebExceptionResolver:{}", ex);
 		}
 

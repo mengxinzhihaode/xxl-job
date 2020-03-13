@@ -5,13 +5,13 @@ import com.glodon.job.core.biz.ExecutorBiz;
 import com.glodon.job.core.biz.model.LogResult;
 import com.glodon.job.core.biz.model.ReturnT;
 import com.glodon.job.core.enums.ExecutorBlockStrategyEnum;
-import com.glodon.job.core.executor.XxlJobExecutor;
+import com.glodon.job.core.executor.GlodonJobExecutor;
 import com.glodon.job.core.glue.GlueFactory;
 import com.glodon.job.core.glue.GlueTypeEnum;
 import com.glodon.job.core.handler.IJobHandler;
 import com.glodon.job.core.handler.impl.GlueJobHandler;
 import com.glodon.job.core.handler.impl.ScriptJobHandler;
-import com.glodon.job.core.log.XxlJobFileAppender;
+import com.glodon.job.core.log.GlodonJobFileAppender;
 import com.glodon.job.core.thread.JobThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class ExecutorBizImpl implements ExecutorBiz {
 
         // isRunningOrHasQueue
         boolean isRunningOrHasQueue = false;
-        JobThread jobThread = XxlJobExecutor.loadJobThread(jobId);
+        JobThread jobThread = GlodonJobExecutor.loadJobThread(jobId);
         if (jobThread != null && jobThread.isRunningOrHasQueue()) {
             isRunningOrHasQueue = true;
         }
@@ -48,9 +48,9 @@ public class ExecutorBizImpl implements ExecutorBiz {
     @Override
     public ReturnT<String> kill(int jobId) {
         // kill handlerThread, and create new one
-        JobThread jobThread = XxlJobExecutor.loadJobThread(jobId);
+        JobThread jobThread = GlodonJobExecutor.loadJobThread(jobId);
         if (jobThread != null) {
-            XxlJobExecutor.removeJobThread(jobId, "scheduling center kill job.");
+            GlodonJobExecutor.removeJobThread(jobId, "scheduling center kill job.");
             return ReturnT.SUCCESS;
         }
 
@@ -60,16 +60,16 @@ public class ExecutorBizImpl implements ExecutorBiz {
     @Override
     public ReturnT<LogResult> log(long logDateTim, long logId, int fromLineNum) {
         // log filename: logPath/yyyy-MM-dd/9999.log
-        String logFileName = XxlJobFileAppender.makeLogFileName(new Date(logDateTim), logId);
+        String logFileName = GlodonJobFileAppender.makeLogFileName(new Date(logDateTim), logId);
 
-        LogResult logResult = XxlJobFileAppender.readLog(logFileName, fromLineNum);
+        LogResult logResult = GlodonJobFileAppender.readLog(logFileName, fromLineNum);
         return new ReturnT<LogResult>(logResult);
     }
 
     @Override
     public ReturnT<String> run(TriggerParam triggerParam) {
         // load old：jobHandler + jobThread
-        JobThread jobThread = XxlJobExecutor.loadJobThread(triggerParam.getJobId());
+        JobThread jobThread = GlodonJobExecutor.loadJobThread(triggerParam.getJobId());
         IJobHandler jobHandler = jobThread!=null?jobThread.getHandler():null;
         String removeOldReason = null;
 
@@ -78,7 +78,7 @@ public class ExecutorBizImpl implements ExecutorBiz {
         if (GlueTypeEnum.BEAN == glueTypeEnum) {
 
             // new jobhandler
-            IJobHandler newJobHandler = XxlJobExecutor.loadJobHandler(triggerParam.getExecutorHandler());
+            IJobHandler newJobHandler = GlodonJobExecutor.loadJobHandler(triggerParam.getExecutorHandler());
 
             // valid old jobThread
             if (jobThread!=null && jobHandler != newJobHandler) {
@@ -163,7 +163,8 @@ public class ExecutorBizImpl implements ExecutorBiz {
 
         // replace thread (new or exists invalid)
         if (jobThread == null) {
-            jobThread = XxlJobExecutor.registJobThread(triggerParam.getJobId(), jobHandler, removeOldReason);
+            //regist and start job
+            jobThread = GlodonJobExecutor.registJobThread(triggerParam.getJobId(), jobHandler, removeOldReason);
         }
 
         // push data to queue

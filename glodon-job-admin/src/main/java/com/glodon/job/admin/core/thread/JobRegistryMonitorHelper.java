@@ -1,8 +1,8 @@
 package com.glodon.job.admin.core.thread;
 
-import com.glodon.job.admin.core.conf.XxlJobAdminConfig;
-import com.glodon.job.admin.core.model.XxlJobGroup;
-import com.glodon.job.admin.core.model.XxlJobRegistry;
+import com.glodon.job.admin.core.conf.GlodonJobAdminConfig;
+import com.glodon.job.admin.core.model.GlodonJobGroup;
+import com.glodon.job.admin.core.model.GlodonJobRegistry;
 import com.glodon.job.core.enums.RegistryConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,20 +31,20 @@ public class JobRegistryMonitorHelper {
 				while (!toStop) {
 					try {
 						// auto registry group
-						List<XxlJobGroup> groupList = XxlJobAdminConfig.getAdminConfig().getXxlJobGroupDao().findByAddressType(0);
+						List<GlodonJobGroup> groupList = GlodonJobAdminConfig.getAdminConfig().getGlodonJobGroupDao().findByAddressType(0);
 						if (groupList!=null && !groupList.isEmpty()) {
 
 							// remove dead address (admin/executor)
-							List<Integer> ids = XxlJobAdminConfig.getAdminConfig().getXxlJobRegistryDao().findDead(RegistryConfig.DEAD_TIMEOUT, new Date());
+							List<Integer> ids = GlodonJobAdminConfig.getAdminConfig().getGlodonJobRegistryDao().findDead(RegistryConfig.DEAD_TIMEOUT, new Date());
 							if (ids!=null && ids.size()>0) {
-								XxlJobAdminConfig.getAdminConfig().getXxlJobRegistryDao().removeDead(ids);
+								GlodonJobAdminConfig.getAdminConfig().getGlodonJobRegistryDao().removeDead(ids);
 							}
 
 							// fresh online address (admin/executor)
 							HashMap<String, List<String>> appAddressMap = new HashMap<String, List<String>>();
-							List<XxlJobRegistry> list = XxlJobAdminConfig.getAdminConfig().getXxlJobRegistryDao().findAll(RegistryConfig.DEAD_TIMEOUT, new Date());
+							List<GlodonJobRegistry> list = GlodonJobAdminConfig.getAdminConfig().getGlodonJobRegistryDao().findAll(RegistryConfig.DEAD_TIMEOUT, new Date());
 							if (list != null) {
-								for (XxlJobRegistry item: list) {
+								for (GlodonJobRegistry item: list) {
 									if (RegistryConfig.RegistType.EXECUTOR.name().equals(item.getRegistryGroup())) {
 										String appName = item.getRegistryKey();
 										List<String> registryList = appAddressMap.get(appName);
@@ -61,7 +61,7 @@ public class JobRegistryMonitorHelper {
 							}
 
 							// fresh group address
-							for (XxlJobGroup group: groupList) {
+							for (GlodonJobGroup group: groupList) {
 								List<String> registryList = appAddressMap.get(group.getAppName());
 								String addressListStr = null;
 								if (registryList!=null && !registryList.isEmpty()) {
@@ -73,7 +73,7 @@ public class JobRegistryMonitorHelper {
 									addressListStr = addressListStr.substring(0, addressListStr.length()-1);
 								}
 								group.setAddressList(addressListStr);
-								XxlJobAdminConfig.getAdminConfig().getXxlJobGroupDao().update(group);
+								GlodonJobAdminConfig.getAdminConfig().getGlodonJobGroupDao().update(group);
 							}
 						}
 					} catch (Exception e) {
@@ -93,7 +93,7 @@ public class JobRegistryMonitorHelper {
 			}
 		});
 		registryThread.setDaemon(true);
-		registryThread.setName("xxl-job, admin JobRegistryMonitorHelper");
+		registryThread.setName("glodon-job, admin JobRegistryMonitorHelper");
 		registryThread.start();
 	}
 

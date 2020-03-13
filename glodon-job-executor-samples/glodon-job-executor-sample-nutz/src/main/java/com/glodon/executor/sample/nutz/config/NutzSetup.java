@@ -4,7 +4,7 @@ import com.glodon.executor.sample.nutz.jobhandler.CommandJobHandler;
 import com.glodon.executor.sample.nutz.jobhandler.DemoJobHandler;
 import com.glodon.executor.sample.nutz.jobhandler.HttpJobHandler;
 import com.glodon.executor.sample.nutz.jobhandler.ShardingJobHandler;
-import com.glodon.job.core.executor.XxlJobExecutor;
+import com.glodon.job.core.executor.GlodonJobExecutor;
 import org.nutz.ioc.impl.PropertiesProxy;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.Setup;
@@ -19,33 +19,33 @@ import org.slf4j.LoggerFactory;
 public class NutzSetup implements Setup {
 	private Logger logger = LoggerFactory.getLogger(NutzSetup.class);
 
-	private XxlJobExecutor xxlJobExecutor = null;
+	private GlodonJobExecutor glodonJobExecutor = null;
 
 	@Override
 	public void init(NutConfig cfg) {
 
 		// registry jobhandler
-		XxlJobExecutor.registJobHandler("demoJobHandler", new DemoJobHandler());
-		XxlJobExecutor.registJobHandler("shardingJobHandler", new ShardingJobHandler());
-		XxlJobExecutor.registJobHandler("httpJobHandler", new HttpJobHandler());
-		XxlJobExecutor.registJobHandler("commandJobHandler", new CommandJobHandler());
+		GlodonJobExecutor.registJobHandler("demoJobHandler", new DemoJobHandler());
+		GlodonJobExecutor.registJobHandler("shardingJobHandler", new ShardingJobHandler());
+		GlodonJobExecutor.registJobHandler("httpJobHandler", new HttpJobHandler());
+		GlodonJobExecutor.registJobHandler("commandJobHandler", new CommandJobHandler());
 
 		// load executor prop
-		PropertiesProxy xxlJobProp = new PropertiesProxy("xxl-job-executor.properties");
+		PropertiesProxy xxlJobProp = new PropertiesProxy("glodon-job-executor.properties");
 
 		// init executor
-		xxlJobExecutor = new XxlJobExecutor();
-		xxlJobExecutor.setAdminAddresses(xxlJobProp.get("xxl.job.admin.addresses"));
-		xxlJobExecutor.setAppName(xxlJobProp.get("xxl.job.executor.appname"));
-		xxlJobExecutor.setIp(xxlJobProp.get("xxl.job.executor.ip"));
-		xxlJobExecutor.setPort(xxlJobProp.getInt("xxl.job.executor.port"));
-		xxlJobExecutor.setAccessToken(xxlJobProp.get("xxl.job.accessToken"));
-		xxlJobExecutor.setLogPath(xxlJobProp.get("xxl.job.executor.logpath"));
-		xxlJobExecutor.setLogRetentionDays(xxlJobProp.getInt("xxl.job.executor.logretentiondays"));
+		glodonJobExecutor = new GlodonJobExecutor();
+		glodonJobExecutor.setAdminAddresses(xxlJobProp.get("xxl.job.admin.addresses"));
+		glodonJobExecutor.setAppName(xxlJobProp.get("xxl.job.executor.appname"));
+		glodonJobExecutor.setIp(xxlJobProp.get("xxl.job.executor.ip"));
+		glodonJobExecutor.setPort(xxlJobProp.getInt("xxl.job.executor.port"));
+		glodonJobExecutor.setAccessToken(xxlJobProp.get("xxl.job.accessToken"));
+		glodonJobExecutor.setLogPath(xxlJobProp.get("xxl.job.executor.logpath"));
+		glodonJobExecutor.setLogRetentionDays(xxlJobProp.getInt("xxl.job.executor.logretentiondays"));
 
 		// start executor
 		try {
-			xxlJobExecutor.start();
+			glodonJobExecutor.start();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -53,8 +53,8 @@ public class NutzSetup implements Setup {
 
 	@Override
 	public void destroy(NutConfig cfg) {
-		if (xxlJobExecutor != null) {
-			xxlJobExecutor.destroy();
+		if (glodonJobExecutor != null) {
+			glodonJobExecutor.destroy();
 		}
 	}
 

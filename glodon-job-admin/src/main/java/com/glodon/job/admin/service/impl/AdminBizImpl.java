@@ -1,14 +1,14 @@
 package com.glodon.job.admin.service.impl;
 
-import com.glodon.job.admin.core.model.XxlJobInfo;
-import com.glodon.job.admin.core.model.XxlJobLog;
+import com.glodon.job.admin.core.model.GlodonJobInfo;
+import com.glodon.job.admin.core.model.GlodonJobLog;
 import com.glodon.job.admin.core.thread.JobTriggerPoolHelper;
 import com.glodon.job.admin.core.trigger.TriggerTypeEnum;
 import com.glodon.job.admin.core.util.I18nUtil;
-import com.glodon.job.admin.dao.XxlJobGroupDao;
-import com.glodon.job.admin.dao.XxlJobInfoDao;
-import com.glodon.job.admin.dao.XxlJobLogDao;
-import com.glodon.job.admin.dao.XxlJobRegistryDao;
+import com.glodon.job.admin.dao.GlodonJobGroupDao;
+import com.glodon.job.admin.dao.GlodonJobInfoDao;
+import com.glodon.job.admin.dao.GlodonJobLogDao;
+import com.glodon.job.admin.dao.GlodonJobRegistryDao;
 import com.glodon.job.core.biz.AdminBiz;
 import com.glodon.job.core.biz.model.HandleCallbackParam;
 import com.glodon.job.core.biz.model.RegistryParam;
@@ -32,13 +32,13 @@ public class AdminBizImpl implements AdminBiz {
     private static Logger logger = LoggerFactory.getLogger(AdminBizImpl.class);
 
     @Resource
-    public XxlJobLogDao xxlJobLogDao;
+    public GlodonJobLogDao glodonJobLogDao;
     @Resource
-    private XxlJobInfoDao xxlJobInfoDao;
+    private GlodonJobInfoDao glodonJobInfoDao;
     @Resource
-    private XxlJobRegistryDao xxlJobRegistryDao;
+    private GlodonJobRegistryDao glodonJobRegistryDao;
     @Resource
-    private XxlJobGroupDao xxlJobGroupDao;
+    private GlodonJobGroupDao xxlJobGroupDao;
 
 
     @Override
@@ -54,7 +54,7 @@ public class AdminBizImpl implements AdminBiz {
 
     private ReturnT<String> callback(HandleCallbackParam handleCallbackParam) {
         // valid log item
-        XxlJobLog log = xxlJobLogDao.load(handleCallbackParam.getLogId());
+        GlodonJobLog log = glodonJobLogDao.load(handleCallbackParam.getLogId());
         if (log == null) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "log item not found.");
         }
@@ -65,7 +65,7 @@ public class AdminBizImpl implements AdminBiz {
         // trigger success, to trigger child job
         String callbackMsg = null;
         if (IJobHandler.SUCCESS.getCode() == handleCallbackParam.getExecuteResult().getCode()) {
-            XxlJobInfo xxlJobInfo = xxlJobInfoDao.loadById(log.getJobId());
+            GlodonJobInfo xxlJobInfo = glodonJobInfoDao.loadById(log.getJobId());
             if (xxlJobInfo!=null && xxlJobInfo.getChildJobId()!=null && xxlJobInfo.getChildJobId().trim().length()>0) {
                 callbackMsg = "<br><br><span style=\"color:#00c0ef;\" > >>>>>>>>>>>"+ I18nUtil.getString("jobconf_trigger_child_run") +"<<<<<<<<<<< </span><br>";
 
@@ -111,7 +111,7 @@ public class AdminBizImpl implements AdminBiz {
         log.setHandleTime(new Date());
         log.setHandleCode(handleCallbackParam.getExecuteResult().getCode());
         log.setHandleMsg(handleMsg.toString());
-        xxlJobLogDao.updateHandleInfo(log);
+        glodonJobLogDao.updateHandleInfo(log);
 
         return ReturnT.SUCCESS;
     }
@@ -135,9 +135,9 @@ public class AdminBizImpl implements AdminBiz {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "Illegal Argument.");
         }
 
-        int ret = xxlJobRegistryDao.registryUpdate(registryParam.getRegistryGroup(), registryParam.getRegistryKey(), registryParam.getRegistryValue(), new Date());
+        int ret = glodonJobRegistryDao.registryUpdate(registryParam.getRegistryGroup(), registryParam.getRegistryKey(), registryParam.getRegistryValue(), new Date());
         if (ret < 1) {
-            xxlJobRegistryDao.registrySave(registryParam.getRegistryGroup(), registryParam.getRegistryKey(), registryParam.getRegistryValue(), new Date());
+            glodonJobRegistryDao.registrySave(registryParam.getRegistryGroup(), registryParam.getRegistryKey(), registryParam.getRegistryValue(), new Date());
 
             // fresh
             freshGroupRegistryInfo(registryParam);
@@ -155,7 +155,7 @@ public class AdminBizImpl implements AdminBiz {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "Illegal Argument.");
         }
 
-        int ret = xxlJobRegistryDao.registryDelete(registryParam.getRegistryGroup(), registryParam.getRegistryKey(), registryParam.getRegistryValue());
+        int ret = glodonJobRegistryDao.registryDelete(registryParam.getRegistryGroup(), registryParam.getRegistryKey(), registryParam.getRegistryValue());
         if (ret > 0) {
 
             // fresh

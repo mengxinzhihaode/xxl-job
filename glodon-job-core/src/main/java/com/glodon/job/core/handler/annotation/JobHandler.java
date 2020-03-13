@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 /**
  * annotation for job handler
  *
- * will be replaced by {@link XxlJob}
+ * will be replaced by {@link GlodonJob}
  *
  * @author 2016-5-17 21:06:49
  */

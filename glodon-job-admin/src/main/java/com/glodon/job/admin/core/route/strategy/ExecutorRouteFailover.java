@@ -1,8 +1,8 @@
 package com.glodon.job.admin.core.route.strategy;
 
 import com.glodon.job.admin.core.route.ExecutorRouter;
+import com.glodon.job.admin.core.scheduler.GlodonJobScheduler;
 import com.glodon.job.admin.core.util.I18nUtil;
-import com.glodon.job.admin.core.scheduler.XxlJobScheduler;
 import com.glodon.job.core.biz.ExecutorBiz;
 import com.glodon.job.core.biz.model.ReturnT;
 import com.glodon.job.core.biz.model.TriggerParam;
@@ -22,7 +22,7 @@ public class ExecutorRouteFailover extends ExecutorRouter {
             // beat
             ReturnT<String> beatResult = null;
             try {
-                ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(address);
+                ExecutorBiz executorBiz = GlodonJobScheduler.getExecutorBiz(address);
                 beatResult = executorBiz.beat();
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);

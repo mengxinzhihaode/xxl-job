@@ -4,7 +4,7 @@ import com.glodon.job.core.biz.AdminBiz;
 import com.glodon.job.core.biz.model.RegistryParam;
 import com.glodon.job.core.biz.model.ReturnT;
 import com.glodon.job.core.enums.RegistryConfig;
-import com.glodon.job.core.executor.XxlJobExecutor;
+import com.glodon.job.core.executor.GlodonJobExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,11 +27,11 @@ public class ExecutorRegistryThread {
 
         // valid
         if (appName==null || appName.trim().length()==0) {
-            logger.warn(">>>>>>>>>>> xxl-job, executor registry config fail, appName is null.");
+            logger.warn(">>>>>>>>>>> glodon-job, executor registry config fail, appName is null.");
             return;
         }
-        if (XxlJobExecutor.getAdminBizList() == null) {
-            logger.warn(">>>>>>>>>>> xxl-job, executor registry config fail, adminAddresses is null.");
+        if (GlodonJobExecutor.getAdminBizList() == null) {
+            logger.warn(">>>>>>>>>>> glodon-job, executor registry config fail, adminAddresses is null.");
             return;
         }
 
@@ -43,7 +43,7 @@ public class ExecutorRegistryThread {
                 while (!toStop) {
                     try {
                         RegistryParam registryParam = new RegistryParam(RegistryConfig.RegistType.EXECUTOR.name(), appName, address);
-                        for (AdminBiz adminBiz: XxlJobExecutor.getAdminBizList()) {
+                        for (AdminBiz adminBiz: GlodonJobExecutor.getAdminBizList()) {
                             try {
                                 ReturnT<String> registryResult = adminBiz.registry(registryParam);
                                 if (registryResult!=null && ReturnT.SUCCESS_CODE == registryResult.getCode()) {
@@ -79,7 +79,7 @@ public class ExecutorRegistryThread {
                 // registry remove
                 try {
                     RegistryParam registryParam = new RegistryParam(RegistryConfig.RegistType.EXECUTOR.name(), appName, address);
-                    for (AdminBiz adminBiz: XxlJobExecutor.getAdminBizList()) {
+                    for (AdminBiz adminBiz: GlodonJobExecutor.getAdminBizList()) {
                         try {
                             ReturnT<String> registryResult = adminBiz.registryRemove(registryParam);
                             if (registryResult!=null && ReturnT.SUCCESS_CODE == registryResult.getCode()) {

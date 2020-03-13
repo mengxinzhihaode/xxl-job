@@ -1,7 +1,7 @@
 package com.glodon.job.admin.controller.interceptor;
 
 import com.glodon.job.admin.controller.annotation.PermissionLimit;
-import com.glodon.job.admin.core.model.XxlJobUser;
+import com.glodon.job.admin.core.model.GlodonJobUser;
 import com.glodon.job.admin.core.util.I18nUtil;
 import com.glodon.job.admin.service.LoginService;
 import org.springframework.stereotype.Component;
@@ -41,7 +41,7 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		if (needLogin) {
-			XxlJobUser loginUser = loginService.ifLogin(request, response);
+			GlodonJobUser loginUser = loginService.ifLogin(request, response);
 			if (loginUser == null) {
 				response.sendRedirect(request.getContextPath() + "/toLogin");
 				//request.getRequestDispatcher("/toLogin").forward(request, response);

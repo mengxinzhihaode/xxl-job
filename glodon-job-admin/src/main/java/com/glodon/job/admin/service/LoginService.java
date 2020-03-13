@@ -1,10 +1,10 @@
 package com.glodon.job.admin.service;
 
-import com.glodon.job.admin.core.model.XxlJobUser;
+import com.glodon.job.admin.core.model.GlodonJobUser;
 import com.glodon.job.admin.core.util.CookieUtil;
 import com.glodon.job.admin.core.util.I18nUtil;
 import com.glodon.job.admin.core.util.JacksonUtil;
-import com.glodon.job.admin.dao.XxlJobUserDao;
+import com.glodon.job.admin.dao.GlodonJobUserDao;
 import com.glodon.job.core.biz.model.ReturnT;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.DigestUtils;
@@ -23,19 +23,19 @@ public class LoginService {
     public static final String LOGIN_IDENTITY_KEY = "XXL_JOB_LOGIN_IDENTITY";
 
     @Resource
-    private XxlJobUserDao xxlJobUserDao;
+    private GlodonJobUserDao xxlJobUserDao;
 
 
-    private String makeToken(XxlJobUser xxlJobUser){
+    private String makeToken(GlodonJobUser xxlJobUser){
         String tokenJson = JacksonUtil.writeValueAsString(xxlJobUser);
         String tokenHex = new BigInteger(tokenJson.getBytes()).toString(16);
         return tokenHex;
     }
-    private XxlJobUser parseToken(String tokenHex){
-        XxlJobUser xxlJobUser = null;
+    private GlodonJobUser parseToken(String tokenHex){
+        GlodonJobUser xxlJobUser = null;
         if (tokenHex != null) {
             String tokenJson = new String(new BigInteger(tokenHex, 16).toByteArray());      // username_password(md5)
-            xxlJobUser = JacksonUtil.readValue(tokenJson, XxlJobUser.class);
+            xxlJobUser = JacksonUtil.readValue(tokenJson, GlodonJobUser.class);
         }
         return xxlJobUser;
     }
@@ -49,7 +49,7 @@ public class LoginService {
         }
 
         // valid passowrd
-        XxlJobUser xxlJobUser = xxlJobUserDao.loadByUserName(username);
+        GlodonJobUser xxlJobUser = xxlJobUserDao.loadByUserName(username);
         if (xxlJobUser == null) {
             return new ReturnT<String>(500, I18nUtil.getString("login_param_unvalid"));
         }
@@ -82,17 +82,17 @@ public class LoginService {
      * @param request
      * @return
      */
-    public XxlJobUser ifLogin(HttpServletRequest request, HttpServletResponse response){
+    public GlodonJobUser ifLogin(HttpServletRequest request, HttpServletResponse response){
         String cookieToken = CookieUtil.getValue(request, LOGIN_IDENTITY_KEY);
         if (cookieToken != null) {
-            XxlJobUser cookieUser = null;
+            GlodonJobUser cookieUser = null;
             try {
                 cookieUser = parseToken(cookieToken);
             } catch (Exception e) {
                 logout(request, response);
             }
             if (cookieUser != null) {
-                XxlJobUser dbUser = xxlJobUserDao.loadByUserName(cookieUser.getUsername());
+                GlodonJobUser dbUser = xxlJobUserDao.loadByUserName(cookieUser.getUsername());
                 if (dbUser != null) {
                     if (cookieUser.getPassword().equals(dbUser.getPassword())) {
                         return dbUser;

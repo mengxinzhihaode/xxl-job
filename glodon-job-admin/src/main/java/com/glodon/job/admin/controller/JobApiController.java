@@ -1,7 +1,7 @@
 package com.glodon.job.admin.controller;
 
-import com.glodon.job.admin.core.conf.XxlJobAdminConfig;
-import com.glodon.job.admin.core.exception.XxlJobException;
+import com.glodon.job.admin.core.conf.GlodonJobAdminConfig;
+import com.glodon.job.admin.core.exception.GlodonJobException;
 import com.glodon.job.admin.core.util.JacksonUtil;
 import com.glodon.job.admin.controller.annotation.PermissionLimit;
 import com.glodon.job.core.biz.AdminBiz;
@@ -35,10 +35,10 @@ public class JobApiController {
      * valid access token
      */
     private void validAccessToken(HttpServletRequest request){
-        if (XxlJobAdminConfig.getAdminConfig().getAccessToken()!=null
-                && XxlJobAdminConfig.getAdminConfig().getAccessToken().trim().length()>0
-                && !XxlJobAdminConfig.getAdminConfig().getAccessToken().equals(request.getHeader(XxlJobRemotingUtil.XXL_RPC_ACCESS_TOKEN))) {
-            throw new XxlJobException("The access token is wrong.");
+        if (GlodonJobAdminConfig.getAdminConfig().getAccessToken()!=null
+                && GlodonJobAdminConfig.getAdminConfig().getAccessToken().trim().length()>0
+                && !GlodonJobAdminConfig.getAdminConfig().getAccessToken().equals(request.getHeader(XxlJobRemotingUtil.XXL_RPC_ACCESS_TOKEN))) {
+            throw new GlodonJobException("The access token is wrong.");
         }
     }
 
@@ -55,7 +55,7 @@ public class JobApiController {
             }
         } catch (Exception e) { }
         if (param==null) {
-            throw new XxlJobException("The request data invalid.");
+            throw new GlodonJobException("The request data invalid.");
         }
         return param;
     }

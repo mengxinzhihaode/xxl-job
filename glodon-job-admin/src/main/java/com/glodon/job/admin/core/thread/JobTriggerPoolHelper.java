@@ -1,8 +1,8 @@
 package com.glodon.job.admin.core.thread;
 
-import com.glodon.job.admin.core.conf.XxlJobAdminConfig;
+import com.glodon.job.admin.core.conf.GlodonJobAdminConfig;
+import com.glodon.job.admin.core.trigger.GlodonJobTrigger;
 import com.glodon.job.admin.core.trigger.TriggerTypeEnum;
-import com.glodon.job.admin.core.trigger.XxlJobTrigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,27 +27,27 @@ public class JobTriggerPoolHelper {
     public void start(){
         fastTriggerPool = new ThreadPoolExecutor(
                 10,
-                XxlJobAdminConfig.getAdminConfig().getTriggerPoolFastMax(),
+                GlodonJobAdminConfig.getAdminConfig().getTriggerPoolFastMax(),
                 60L,
                 TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>(1000),
                 new ThreadFactory() {
                     @Override
                     public Thread newThread(Runnable r) {
-                        return new Thread(r, "xxl-job, admin JobTriggerPoolHelper-fastTriggerPool-" + r.hashCode());
+                        return new Thread(r, "glod-job, admin JobTriggerPoolHelper-fastTriggerPool-" + r.hashCode());
                     }
                 });
 
         slowTriggerPool = new ThreadPoolExecutor(
                 10,
-                XxlJobAdminConfig.getAdminConfig().getTriggerPoolSlowMax(),
+                GlodonJobAdminConfig.getAdminConfig().getTriggerPoolSlowMax(),
                 60L,
                 TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>(2000),
                 new ThreadFactory() {
                     @Override
                     public Thread newThread(Runnable r) {
-                        return new Thread(r, "xxl-job, admin JobTriggerPoolHelper-slowTriggerPool-" + r.hashCode());
+                        return new Thread(r, "glod-job, admin JobTriggerPoolHelper-slowTriggerPool-" + r.hashCode());
                     }
                 });
     }
@@ -87,7 +87,7 @@ public class JobTriggerPoolHelper {
 
                 try {
                     // do trigger
-                    XxlJobTrigger.trigger(jobId, triggerType, failRetryCount, executorShardingParam, executorParam);
+                    GlodonJobTrigger.trigger(jobId, triggerType, failRetryCount, executorShardingParam, executorParam);
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 } finally {

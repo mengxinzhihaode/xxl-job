@@ -4,7 +4,7 @@ import com.glodon.executor.sample.jboot.jobhandler.DemoJobHandler;
 import com.glodon.executor.sample.jboot.jobhandler.ShardingJobHandler;
 import com.glodon.executor.sample.jboot.jobhandler.CommandJobHandler;
 import com.glodon.executor.sample.jboot.jobhandler.HttpJobHandler;
-import com.glodon.job.core.executor.XxlJobExecutor;
+import com.glodon.job.core.executor.GlodonJobExecutor;
 import io.jboot.Jboot;
 import io.jboot.core.listener.JbootAppListenerBase;
 import org.slf4j.Logger;
@@ -14,29 +14,29 @@ public class JbootConfig extends JbootAppListenerBase {
     private Logger logger = LoggerFactory.getLogger(JbootConfig.class);
 
     // ---------------------- xxl-job executor ----------------------
-    private XxlJobExecutor xxlJobExecutor = null;
+    private GlodonJobExecutor glodonJobExecutor = null;
 
     private void initXxlJobExecutor() {
 
         // registry jobhandler
-        XxlJobExecutor.registJobHandler("demoJobHandler", new DemoJobHandler());
-        XxlJobExecutor.registJobHandler("shardingJobHandler", new ShardingJobHandler());
-        XxlJobExecutor.registJobHandler("httpJobHandler", new HttpJobHandler());
-        XxlJobExecutor.registJobHandler("commandJobHandler", new CommandJobHandler());
+        GlodonJobExecutor.registJobHandler("demoJobHandler", new DemoJobHandler());
+        GlodonJobExecutor.registJobHandler("shardingJobHandler", new ShardingJobHandler());
+        GlodonJobExecutor.registJobHandler("httpJobHandler", new HttpJobHandler());
+        GlodonJobExecutor.registJobHandler("commandJobHandler", new CommandJobHandler());
 
         // init executor
-        xxlJobExecutor = new XxlJobExecutor();
-        xxlJobExecutor.setAdminAddresses(Jboot.configValue("xxl.job.admin.addresses"));
-        xxlJobExecutor.setAppName(Jboot.configValue("xxl.job.executor.appname"));
-        xxlJobExecutor.setIp(Jboot.configValue("xxl.job.executor.ip"));
-        xxlJobExecutor.setPort(Integer.valueOf(Jboot.configValue("xxl.job.executor.port")));
-        xxlJobExecutor.setAccessToken(Jboot.configValue("xxl.job.accessToken"));
-        xxlJobExecutor.setLogPath(Jboot.configValue("xxl.job.executor.logpath"));
-        xxlJobExecutor.setLogRetentionDays(Integer.valueOf(Jboot.configValue("xxl.job.executor.logretentiondays")));
+        glodonJobExecutor = new GlodonJobExecutor();
+        glodonJobExecutor.setAdminAddresses(Jboot.configValue("glodon.job.admin.addresses"));
+        glodonJobExecutor.setAppName(Jboot.configValue("glodon.job.executor.appname"));
+        glodonJobExecutor.setIp(Jboot.configValue("glodon.job.executor.ip"));
+        glodonJobExecutor.setPort(Integer.valueOf(Jboot.configValue("glodon.job.executor.port")));
+        glodonJobExecutor.setAccessToken(Jboot.configValue("glodon.job.accessToken"));
+        glodonJobExecutor.setLogPath(Jboot.configValue("glodon.job.executor.logpath"));
+        glodonJobExecutor.setLogRetentionDays(Integer.valueOf(Jboot.configValue("glodon.job.executor.logretentiondays")));
 
         // start executor
         try {
-            xxlJobExecutor.start();
+            glodonJobExecutor.start();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -45,8 +45,8 @@ public class JbootConfig extends JbootAppListenerBase {
     // ---------------------- jboot ----------------------
 
     private void destoryXxlJobExecutor() {
-        if (xxlJobExecutor != null) {
-            xxlJobExecutor.destroy();
+        if (glodonJobExecutor != null) {
+            glodonJobExecutor.destroy();
         }
     }
 

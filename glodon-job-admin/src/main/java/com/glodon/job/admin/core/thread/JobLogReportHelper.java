@@ -1,7 +1,7 @@
 package com.glodon.job.admin.core.thread;
 
-import com.glodon.job.admin.core.conf.XxlJobAdminConfig;
-import com.glodon.job.admin.core.model.XxlJobLogReport;
+import com.glodon.job.admin.core.conf.GlodonJobAdminConfig;
+import com.glodon.job.admin.core.model.GlodonJobLogReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,13 +62,13 @@ public class JobLogReportHelper {
                             Date todayTo = itemDay.getTime();
 
                             // refresh log-report every minute
-                            XxlJobLogReport xxlJobLogReport = new XxlJobLogReport();
+                            GlodonJobLogReport xxlJobLogReport = new GlodonJobLogReport();
                             xxlJobLogReport.setTriggerDay(todayFrom);
                             xxlJobLogReport.setRunningCount(0);
                             xxlJobLogReport.setSucCount(0);
                             xxlJobLogReport.setFailCount(0);
 
-                            Map<String, Object> triggerCountMap = XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().findLogReport(todayFrom, todayTo);
+                            Map<String, Object> triggerCountMap = GlodonJobAdminConfig.getAdminConfig().getGlodonJobLogDao().findLogReport(todayFrom, todayTo);
                             if (triggerCountMap!=null && triggerCountMap.size()>0) {
                                 int triggerDayCount = triggerCountMap.containsKey("triggerDayCount")?Integer.valueOf(String.valueOf(triggerCountMap.get("triggerDayCount"))):0;
                                 int triggerDayCountRunning = triggerCountMap.containsKey("triggerDayCountRunning")?Integer.valueOf(String.valueOf(triggerCountMap.get("triggerDayCountRunning"))):0;
@@ -81,9 +81,9 @@ public class JobLogReportHelper {
                             }
 
                             // do refresh
-                            int ret = XxlJobAdminConfig.getAdminConfig().getXxlJobLogReportDao().update(xxlJobLogReport);
+                            int ret = GlodonJobAdminConfig.getAdminConfig().getGlodonJobLogReportDao().update(xxlJobLogReport);
                             if (ret < 1) {
-                                XxlJobAdminConfig.getAdminConfig().getXxlJobLogReportDao().save(xxlJobLogReport);
+                                GlodonJobAdminConfig.getAdminConfig().getGlodonJobLogReportDao().save(xxlJobLogReport);
                             }
                         }
 
@@ -94,12 +94,12 @@ public class JobLogReportHelper {
                     }
 
                     // 2、log-clean: switch open & once each day
-                    if (XxlJobAdminConfig.getAdminConfig().getLogretentiondays()>0
+                    if (GlodonJobAdminConfig.getAdminConfig().getLogretentiondays()>0
                             && System.currentTimeMillis() - lastCleanLogTime > 24*60*60*1000) {
 
                         // expire-time
                         Calendar expiredDay = Calendar.getInstance();
-                        expiredDay.add(Calendar.DAY_OF_MONTH, -1 * XxlJobAdminConfig.getAdminConfig().getLogretentiondays());
+                        expiredDay.add(Calendar.DAY_OF_MONTH, -1 * GlodonJobAdminConfig.getAdminConfig().getLogretentiondays());
                         expiredDay.set(Calendar.HOUR_OF_DAY, 0);
                         expiredDay.set(Calendar.MINUTE, 0);
                         expiredDay.set(Calendar.SECOND, 0);
@@ -109,9 +109,9 @@ public class JobLogReportHelper {
                         // clean expired log
                         List<Long> logIds = null;
                         do {
-                            logIds = XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().findClearLogIds(0, 0, clearBeforeTime, 0, 1000);
+                            logIds = GlodonJobAdminConfig.getAdminConfig().getGlodonJobLogDao().findClearLogIds(0, 0, clearBeforeTime, 0, 1000);
                             if (logIds!=null && logIds.size()>0) {
-                                XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().clearLog(logIds);
+                                GlodonJobAdminConfig.getAdminConfig().getGlodonJobLogDao().clearLog(logIds);
                             }
                         } while (logIds!=null && logIds.size()>0);
 

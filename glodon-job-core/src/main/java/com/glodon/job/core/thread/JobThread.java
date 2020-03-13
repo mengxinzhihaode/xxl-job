@@ -3,10 +3,10 @@ package com.glodon.job.core.thread;
 import com.glodon.job.core.biz.model.HandleCallbackParam;
 import com.glodon.job.core.biz.model.ReturnT;
 import com.glodon.job.core.biz.model.TriggerParam;
-import com.glodon.job.core.log.XxlJobFileAppender;
-import com.glodon.job.core.log.XxlJobLogger;
-import com.glodon.job.core.executor.XxlJobExecutor;
+import com.glodon.job.core.executor.GlodonJobExecutor;
 import com.glodon.job.core.handler.IJobHandler;
+import com.glodon.job.core.log.GlodonJobFileAppender;
+import com.glodon.job.core.log.GlodonJobLogger;
 import com.glodon.job.core.util.ShardingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,12 +116,12 @@ public class JobThread extends Thread{
 					triggerLogIdSet.remove(triggerParam.getLogId());
 
 					// log filename, like "logPath/yyyy-MM-dd/9999.log"
-					String logFileName = XxlJobFileAppender.makeLogFileName(new Date(triggerParam.getLogDateTime()), triggerParam.getLogId());
-					XxlJobFileAppender.contextHolder.set(logFileName);
+					String logFileName = GlodonJobFileAppender.makeLogFileName(new Date(triggerParam.getLogDateTime()), triggerParam.getLogId());
+					GlodonJobFileAppender.contextHolder.set(logFileName);
 					ShardingUtil.setShardingVo(new ShardingUtil.ShardingVO(triggerParam.getBroadcastIndex(), triggerParam.getBroadcastTotal()));
 
 					// execute
-					XxlJobLogger.log("<br>----------- xxl-job job execute start -----------<br>----------- Param:" + triggerParam.getExecutorParams());
+					GlodonJobLogger.log("<br>----------- glod-job job execute start -----------<br>----------- Param:" + triggerParam.getExecutorParams());
 
 					if (triggerParam.getExecutorTimeout() > 0) {
 						// limit timeout
@@ -140,8 +140,8 @@ public class JobThread extends Thread{
 							executeResult = futureTask.get(triggerParam.getExecutorTimeout(), TimeUnit.SECONDS);
 						} catch (TimeoutException e) {
 
-							XxlJobLogger.log("<br>----------- xxl-job job execute timeout");
-							XxlJobLogger.log(e);
+							GlodonJobLogger.log("<br>----------- glod-job job execute timeout");
+							GlodonJobLogger.log(e);
 
 							executeResult = new ReturnT<String>(IJobHandler.FAIL_TIMEOUT.getCode(), "job execute timeout ");
 						} finally {
@@ -161,18 +161,18 @@ public class JobThread extends Thread{
 										:executeResult.getMsg());
 						executeResult.setContent(null);	// limit obj size
 					}
-					XxlJobLogger.log("<br>----------- xxl-job job execute end(finish) -----------<br>----------- ReturnT:" + executeResult);
+					GlodonJobLogger.log("<br>----------- glod-job job execute end(finish) -----------<br>----------- ReturnT:" + executeResult);
 
 				} else {
 					if (idleTimes > 30) {
 						if(triggerQueue.size() == 0) {	// avoid concurrent trigger causes jobId-lost
-							XxlJobExecutor.removeJobThread(jobId, "excutor idel times over limit.");
+							GlodonJobExecutor.removeJobThread(jobId, "excutor idel times over limit.");
 						}
 					}
 				}
 			} catch (Throwable e) {
 				if (toStop) {
-					XxlJobLogger.log("<br>----------- JobThread toStop, stopReason:" + stopReason);
+					GlodonJobLogger.log("<br>----------- JobThread toStop, stopReason:" + stopReason);
 				}
 
 				StringWriter stringWriter = new StringWriter();
@@ -180,7 +180,7 @@ public class JobThread extends Thread{
 				String errorMsg = stringWriter.toString();
 				executeResult = new ReturnT<String>(ReturnT.FAIL_CODE, errorMsg);
 
-				XxlJobLogger.log("<br>----------- JobThread Exception:" + errorMsg + "<br>----------- xxl-job job execute end(error) -----------");
+				GlodonJobLogger.log("<br>----------- JobThread Exception:" + errorMsg + "<br>----------- xxl-job job execute end(error) -----------");
 			} finally {
                 if(triggerParam != null) {
                     // callback handler info
@@ -213,6 +213,6 @@ public class JobThread extends Thread{
 			logger.error(e.getMessage(), e);
 		}
 
-		logger.info(">>>>>>>>>>> xxl-job JobThread stoped, hashCode:{}", Thread.currentThread());
+		logger.info(">>>>>>>>>>> glod-job JobThread stoped, hashCode:{}", Thread.currentThread());
 	}
 }

@@ -1,7 +1,7 @@
 package com.glodon.job.admin.controller;
 
 import com.glodon.job.admin.service.LoginService;
-import com.glodon.job.admin.service.XxlJobService;
+import com.glodon.job.admin.service.GlodonJobService;
 import com.glodon.job.admin.controller.annotation.PermissionLimit;
 import com.glodon.job.core.biz.model.ReturnT;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -28,7 +28,7 @@ import java.util.Map;
 public class IndexController {
 
 	@Resource
-	private XxlJobService xxlJobService;
+	private GlodonJobService xxlJobService;
 	@Resource
 	private LoginService loginService;
 

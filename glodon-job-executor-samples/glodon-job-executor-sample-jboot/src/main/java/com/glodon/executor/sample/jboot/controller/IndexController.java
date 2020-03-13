@@ -8,7 +8,7 @@ import io.jboot.web.controller.annotation.RequestMapping;
 public class IndexController extends JbootController {
 
     public void index() {
-        renderText("xxl job executor running.");
+        renderText("glodon job executor running.");
     }
 
 }

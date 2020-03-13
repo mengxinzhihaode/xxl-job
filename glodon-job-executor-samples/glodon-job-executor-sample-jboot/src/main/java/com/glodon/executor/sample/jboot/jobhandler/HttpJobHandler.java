@@ -2,7 +2,7 @@ package com.glodon.executor.sample.jboot.jobhandler;
 
 import com.glodon.job.core.biz.model.ReturnT;
 import com.glodon.job.core.handler.IJobHandler;
-import com.glodon.job.core.log.XxlJobLogger;
+import com.glodon.job.core.log.GlodonJobLogger;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -58,10 +58,10 @@ public class HttpJobHandler extends IJobHandler {
             }
             String responseMsg = result.toString();
 
-            XxlJobLogger.log(responseMsg);
+            GlodonJobLogger.log(responseMsg);
             return SUCCESS;
         } catch (Exception e) {
-            XxlJobLogger.log(e);
+            GlodonJobLogger.log(e);
             return FAIL;
         } finally {
             try {
@@ -72,7 +72,7 @@ public class HttpJobHandler extends IJobHandler {
                     connection.disconnect();
                 }
             } catch (Exception e2) {
-                XxlJobLogger.log(e2);
+                GlodonJobLogger.log(e2);
             }
         }
 

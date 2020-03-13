@@ -2,7 +2,7 @@ package com.glodon.executor.sample.jboot.jobhandler;
 
 import com.glodon.job.core.biz.model.ReturnT;
 import com.glodon.job.core.handler.IJobHandler;
-import com.glodon.job.core.log.XxlJobLogger;
+import com.glodon.job.core.log.GlodonJobLogger;
 import com.glodon.job.core.util.ShardingUtil;
 
 /**
@@ -17,14 +17,14 @@ public class ShardingJobHandler extends IJobHandler {
 
 		// 分片参数
 		ShardingUtil.ShardingVO shardingVO = ShardingUtil.getShardingVo();
-		XxlJobLogger.log("分片参数：当前分片序号 = {}, 总分片数 = {}", shardingVO.getIndex(), shardingVO.getTotal());
+		GlodonJobLogger.log("分片参数：当前分片序号 = {}, 总分片数 = {}", shardingVO.getIndex(), shardingVO.getTotal());
 
 		// 业务逻辑
 		for (int i = 0; i < shardingVO.getTotal(); i++) {
 			if (i == shardingVO.getIndex()) {
-				XxlJobLogger.log("第 {} 片, 命中分片开始处理", i);
+				GlodonJobLogger.log("第 {} 片, 命中分片开始处理", i);
 			} else {
-				XxlJobLogger.log("第 {} 片, 忽略", i);
+				GlodonJobLogger.log("第 {} 片, 忽略", i);
 			}
 		}
 

@@ -1,11 +1,11 @@
 package com.glodon.job.admin.controller;
 
-import com.glodon.job.admin.core.model.XxlJobGroup;
-import com.glodon.job.admin.core.model.XxlJobRegistry;
+import com.glodon.job.admin.core.model.GlodonJobGroup;
+import com.glodon.job.admin.core.model.GlodonJobRegistry;
 import com.glodon.job.admin.core.util.I18nUtil;
-import com.glodon.job.admin.dao.XxlJobGroupDao;
-import com.glodon.job.admin.dao.XxlJobInfoDao;
-import com.glodon.job.admin.dao.XxlJobRegistryDao;
+import com.glodon.job.admin.dao.GlodonJobGroupDao;
+import com.glodon.job.admin.dao.GlodonJobInfoDao;
+import com.glodon.job.admin.dao.GlodonJobRegistryDao;
 import com.glodon.job.core.biz.model.ReturnT;
 import com.glodon.job.core.enums.RegistryConfig;
 import org.springframework.stereotype.Controller;
@@ -25,17 +25,17 @@ import java.util.*;
 public class JobGroupController {
 
 	@Resource
-	public XxlJobInfoDao xxlJobInfoDao;
+	public GlodonJobInfoDao xxlJobInfoDao;
 	@Resource
-	public XxlJobGroupDao xxlJobGroupDao;
+	public GlodonJobGroupDao xxlJobGroupDao;
 	@Resource
-	private XxlJobRegistryDao xxlJobRegistryDao;
+	private GlodonJobRegistryDao xxlJobRegistryDao;
 
 	@RequestMapping
 	public String index(Model model) {
 
 		// job group (executor)
-		List<XxlJobGroup> list = xxlJobGroupDao.findAll();
+		List<GlodonJobGroup> list = xxlJobGroupDao.findAll();
 
 		model.addAttribute("list", list);
 		return "jobgroup/jobgroup.index";
@@ -43,7 +43,7 @@ public class JobGroupController {
 
 	@RequestMapping("/save")
 	@ResponseBody
-	public ReturnT<String> save(XxlJobGroup xxlJobGroup){
+	public ReturnT<String> save(GlodonJobGroup xxlJobGroup){
 
 		// valid
 		if (xxlJobGroup.getAppName()==null || xxlJobGroup.getAppName().trim().length()==0) {
@@ -73,7 +73,7 @@ public class JobGroupController {
 
 	@RequestMapping("/update")
 	@ResponseBody
-	public ReturnT<String> update(XxlJobGroup xxlJobGroup){
+	public ReturnT<String> update(GlodonJobGroup xxlJobGroup){
 		// valid
 		if (xxlJobGroup.getAppName()==null || xxlJobGroup.getAppName().trim().length()==0) {
 			return new ReturnT<String>(500, (I18nUtil.getString("system_please_input")+"AppName") );
@@ -116,9 +116,9 @@ public class JobGroupController {
 
 	private List<String> findRegistryByAppName(String appNameParam){
 		HashMap<String, List<String>> appAddressMap = new HashMap<String, List<String>>();
-		List<XxlJobRegistry> list = xxlJobRegistryDao.findAll(RegistryConfig.DEAD_TIMEOUT, new Date());
+		List<GlodonJobRegistry> list = xxlJobRegistryDao.findAll(RegistryConfig.DEAD_TIMEOUT, new Date());
 		if (list != null) {
-			for (XxlJobRegistry item: list) {
+			for (GlodonJobRegistry item: list) {
 				if (RegistryConfig.RegistType.EXECUTOR.name().equals(item.getRegistryGroup())) {
 					String appName = item.getRegistryKey();
 					List<String> registryList = appAddressMap.get(appName);
@@ -146,7 +146,7 @@ public class JobGroupController {
 			return new ReturnT<String>(500, I18nUtil.getString("jobgroup_del_limit_0") );
 		}
 
-		List<XxlJobGroup> allList = xxlJobGroupDao.findAll();
+		List<GlodonJobGroup> allList = xxlJobGroupDao.findAll();
 		if (allList.size() == 1) {
 			return new ReturnT<String>(500, I18nUtil.getString("jobgroup_del_limit_1") );
 		}
@@ -157,9 +157,9 @@ public class JobGroupController {
 
 	@RequestMapping("/loadById")
 	@ResponseBody
-	public ReturnT<XxlJobGroup> loadById(int id){
-		XxlJobGroup jobGroup = xxlJobGroupDao.load(id);
-		return jobGroup!=null?new ReturnT<XxlJobGroup>(jobGroup):new ReturnT<XxlJobGroup>(ReturnT.FAIL_CODE, null);
+	public ReturnT<GlodonJobGroup> loadById(int id){
+		GlodonJobGroup jobGroup = xxlJobGroupDao.load(id);
+		return jobGroup!=null?new ReturnT<GlodonJobGroup>(jobGroup):new ReturnT<GlodonJobGroup>(ReturnT.FAIL_CODE, null);
 	}
 
 }

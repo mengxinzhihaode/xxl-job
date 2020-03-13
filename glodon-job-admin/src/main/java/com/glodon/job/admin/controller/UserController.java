@@ -1,10 +1,10 @@
 package com.glodon.job.admin.controller;
 
-import com.glodon.job.admin.core.model.XxlJobGroup;
-import com.glodon.job.admin.core.model.XxlJobUser;
+import com.glodon.job.admin.core.model.GlodonJobGroup;
+import com.glodon.job.admin.core.model.GlodonJobUser;
 import com.glodon.job.admin.core.util.I18nUtil;
-import com.glodon.job.admin.dao.XxlJobGroupDao;
-import com.glodon.job.admin.dao.XxlJobUserDao;
+import com.glodon.job.admin.dao.GlodonJobGroupDao;
+import com.glodon.job.admin.dao.GlodonJobUserDao;
 import com.glodon.job.admin.service.LoginService;
 import com.glodon.job.admin.controller.annotation.PermissionLimit;
 import com.glodon.job.core.biz.model.ReturnT;
@@ -30,16 +30,16 @@ import java.util.Map;
 public class UserController {
 
     @Resource
-    private XxlJobUserDao xxlJobUserDao;
+    private GlodonJobUserDao xxlJobUserDao;
     @Resource
-    private XxlJobGroupDao xxlJobGroupDao;
+    private GlodonJobGroupDao xxlJobGroupDao;
 
     @RequestMapping
     @PermissionLimit(adminuser = true)
     public String index(Model model) {
 
         // 执行器列表
-        List<XxlJobGroup> groupList = xxlJobGroupDao.findAll();
+        List<GlodonJobGroup> groupList = xxlJobGroupDao.findAll();
         model.addAttribute("groupList", groupList);
 
         return "user/user.index";
@@ -53,7 +53,7 @@ public class UserController {
                                         String username, int role) {
 
         // page list
-        List<XxlJobUser> list = xxlJobUserDao.pageList(start, length, username, role);
+        List<GlodonJobUser> list = xxlJobUserDao.pageList(start, length, username, role);
         int list_count = xxlJobUserDao.pageListCount(start, length, username, role);
 
         // package result
@@ -67,7 +67,7 @@ public class UserController {
     @RequestMapping("/add")
     @ResponseBody
     @PermissionLimit(adminuser = true)
-    public ReturnT<String> add(XxlJobUser xxlJobUser) {
+    public ReturnT<String> add(GlodonJobUser xxlJobUser) {
 
         // valid username
         if (!StringUtils.hasText(xxlJobUser.getUsername())) {
@@ -89,7 +89,7 @@ public class UserController {
         xxlJobUser.setPassword(DigestUtils.md5DigestAsHex(xxlJobUser.getPassword().getBytes()));
 
         // check repeat
-        XxlJobUser existUser = xxlJobUserDao.loadByUserName(xxlJobUser.getUsername());
+        GlodonJobUser existUser = xxlJobUserDao.loadByUserName(xxlJobUser.getUsername());
         if (existUser != null) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("user_username_repeat") );
         }
@@ -102,10 +102,10 @@ public class UserController {
     @RequestMapping("/update")
     @ResponseBody
     @PermissionLimit(adminuser = true)
-    public ReturnT<String> update(HttpServletRequest request, XxlJobUser xxlJobUser) {
+    public ReturnT<String> update(HttpServletRequest request, GlodonJobUser xxlJobUser) {
 
         // avoid opt login seft
-        XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
+        GlodonJobUser loginUser = (GlodonJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
         if (loginUser.getUsername().equals(xxlJobUser.getUsername())) {
             return new ReturnT<String>(ReturnT.FAIL.getCode(), I18nUtil.getString("user_update_loginuser_limit"));
         }
@@ -133,7 +133,7 @@ public class UserController {
     public ReturnT<String> remove(HttpServletRequest request, int id) {
 
         // avoid opt login seft
-        XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
+        GlodonJobUser loginUser = (GlodonJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
         if (loginUser.getId() == id) {
             return new ReturnT<String>(ReturnT.FAIL.getCode(), I18nUtil.getString("user_update_loginuser_limit"));
         }
@@ -159,10 +159,10 @@ public class UserController {
         String md5Password = DigestUtils.md5DigestAsHex(password.getBytes());
 
         // update pwd
-        XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
+        GlodonJobUser loginUser = (GlodonJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
 
         // do write
-        XxlJobUser existUser = xxlJobUserDao.loadByUserName(loginUser.getUsername());
+        GlodonJobUser existUser = xxlJobUserDao.loadByUserName(loginUser.getUsername());
         existUser.setPassword(md5Password);
         xxlJobUserDao.update(existUser);
 

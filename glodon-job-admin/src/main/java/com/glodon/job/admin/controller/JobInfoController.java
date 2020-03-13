@@ -1,17 +1,17 @@
 package com.glodon.job.admin.controller;
 
 import com.glodon.job.admin.core.cron.CronExpression;
-import com.glodon.job.admin.core.exception.XxlJobException;
-import com.glodon.job.admin.core.model.XxlJobGroup;
-import com.glodon.job.admin.core.model.XxlJobInfo;
-import com.glodon.job.admin.core.model.XxlJobUser;
+import com.glodon.job.admin.core.exception.GlodonJobException;
+import com.glodon.job.admin.core.model.GlodonJobGroup;
+import com.glodon.job.admin.core.model.GlodonJobInfo;
+import com.glodon.job.admin.core.model.GlodonJobUser;
 import com.glodon.job.admin.core.route.ExecutorRouteStrategyEnum;
 import com.glodon.job.admin.core.thread.JobTriggerPoolHelper;
 import com.glodon.job.admin.core.trigger.TriggerTypeEnum;
 import com.glodon.job.admin.core.util.I18nUtil;
-import com.glodon.job.admin.dao.XxlJobGroupDao;
+import com.glodon.job.admin.dao.GlodonJobGroupDao;
 import com.glodon.job.admin.service.LoginService;
-import com.glodon.job.admin.service.XxlJobService;
+import com.glodon.job.admin.service.GlodonJobService;
 import com.glodon.job.core.biz.model.ReturnT;
 import com.glodon.job.core.enums.ExecutorBlockStrategyEnum;
 import com.glodon.job.core.glue.GlueTypeEnum;
@@ -36,9 +36,9 @@ import java.util.*;
 public class JobInfoController {
 
 	@Resource
-	private XxlJobGroupDao xxlJobGroupDao;
+	private GlodonJobGroupDao xxlJobGroupDao;
 	@Resource
-	private XxlJobService xxlJobService;
+	private GlodonJobService xxlJobService;
 	
 	@RequestMapping
 	public String index(HttpServletRequest request, Model model, @RequestParam(required = false, defaultValue = "-1") int jobGroup) {
@@ -49,12 +49,12 @@ public class JobInfoController {
 		model.addAttribute("ExecutorBlockStrategyEnum", ExecutorBlockStrategyEnum.values());	    // 阻塞处理策略-字典
 
 		// 执行器列表
-		List<XxlJobGroup> jobGroupList_all =  xxlJobGroupDao.findAll();
+		List<GlodonJobGroup> jobGroupList_all =  xxlJobGroupDao.findAll();
 
 		// filter group
-		List<XxlJobGroup> jobGroupList = filterJobGroupByRole(request, jobGroupList_all);
+		List<GlodonJobGroup> jobGroupList = filterJobGroupByRole(request, jobGroupList_all);
 		if (jobGroupList==null || jobGroupList.size()==0) {
-			throw new XxlJobException(I18nUtil.getString("jobgroup_empty"));
+			throw new GlodonJobException(I18nUtil.getString("jobgroup_empty"));
 		}
 
 		model.addAttribute("JobGroupList", jobGroupList);
@@ -63,10 +63,10 @@ public class JobInfoController {
 		return "jobinfo/jobinfo.index";
 	}
 
-	public static List<XxlJobGroup> filterJobGroupByRole(HttpServletRequest request, List<XxlJobGroup> jobGroupList_all){
-		List<XxlJobGroup> jobGroupList = new ArrayList<>();
+	public static List<GlodonJobGroup> filterJobGroupByRole(HttpServletRequest request, List<GlodonJobGroup> jobGroupList_all){
+		List<GlodonJobGroup> jobGroupList = new ArrayList<>();
 		if (jobGroupList_all!=null && jobGroupList_all.size()>0) {
-			XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
+			GlodonJobUser loginUser = (GlodonJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
 			if (loginUser.getRole() == 1) {
 				jobGroupList = jobGroupList_all;
 			} else {
@@ -74,7 +74,7 @@ public class JobInfoController {
 				if (loginUser.getPermission()!=null && loginUser.getPermission().trim().length()>0) {
 					groupIdStrs = Arrays.asList(loginUser.getPermission().trim().split(","));
 				}
-				for (XxlJobGroup groupItem:jobGroupList_all) {
+				for (GlodonJobGroup groupItem:jobGroupList_all) {
 					if (groupIdStrs.contains(String.valueOf(groupItem.getId()))) {
 						jobGroupList.add(groupItem);
 					}
@@ -84,7 +84,7 @@ public class JobInfoController {
 		return jobGroupList;
 	}
 	public static void validPermission(HttpServletRequest request, int jobGroup) {
-		XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
+		GlodonJobUser loginUser = (GlodonJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
 		if (!loginUser.validPermission(jobGroup)) {
 			throw new RuntimeException(I18nUtil.getString("system_permission_limit") + "[username="+ loginUser.getUsername() +"]");
 		}
@@ -101,13 +101,13 @@ public class JobInfoController {
 	
 	@RequestMapping("/add")
 	@ResponseBody
-	public ReturnT<String> add(XxlJobInfo jobInfo) {
+	public ReturnT<String> add(GlodonJobInfo jobInfo) {
 		return xxlJobService.add(jobInfo);
 	}
 	
 	@RequestMapping("/update")
 	@ResponseBody
-	public ReturnT<String> update(XxlJobInfo jobInfo) {
+	public ReturnT<String> update(GlodonJobInfo jobInfo) {
 		return xxlJobService.update(jobInfo);
 	}
 	

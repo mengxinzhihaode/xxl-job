@@ -1,14 +1,14 @@
 package com.glodon.job.admin.controller;
 
-import com.glodon.job.admin.core.exception.XxlJobException;
-import com.glodon.job.admin.core.model.XxlJobGroup;
-import com.glodon.job.admin.core.model.XxlJobInfo;
-import com.glodon.job.admin.core.model.XxlJobLog;
-import com.glodon.job.admin.core.scheduler.XxlJobScheduler;
+import com.glodon.job.admin.core.exception.GlodonJobException;
+import com.glodon.job.admin.core.model.GlodonJobGroup;
+import com.glodon.job.admin.core.model.GlodonJobInfo;
+import com.glodon.job.admin.core.model.GlodonJobLog;
+import com.glodon.job.admin.core.scheduler.GlodonJobScheduler;
 import com.glodon.job.admin.core.util.I18nUtil;
-import com.glodon.job.admin.dao.XxlJobGroupDao;
-import com.glodon.job.admin.dao.XxlJobInfoDao;
-import com.glodon.job.admin.dao.XxlJobLogDao;
+import com.glodon.job.admin.dao.GlodonJobGroupDao;
+import com.glodon.job.admin.dao.GlodonJobInfoDao;
+import com.glodon.job.admin.dao.GlodonJobLogDao;
 import com.glodon.job.core.biz.ExecutorBiz;
 import com.glodon.job.core.biz.model.LogResult;
 import com.glodon.job.core.biz.model.ReturnT;
@@ -38,29 +38,29 @@ public class JobLogController {
 	private static Logger logger = LoggerFactory.getLogger(JobLogController.class);
 
 	@Resource
-	private XxlJobGroupDao xxlJobGroupDao;
+	private GlodonJobGroupDao xxlJobGroupDao;
 	@Resource
-	public XxlJobInfoDao xxlJobInfoDao;
+	public GlodonJobInfoDao xxlJobInfoDao;
 	@Resource
-	public XxlJobLogDao xxlJobLogDao;
+	public GlodonJobLogDao xxlJobLogDao;
 
 	@RequestMapping
 	public String index(HttpServletRequest request, Model model, @RequestParam(required = false, defaultValue = "0") Integer jobId) {
 
 		// 执行器列表
-		List<XxlJobGroup> jobGroupList_all =  xxlJobGroupDao.findAll();
+		List<GlodonJobGroup> jobGroupList_all =  xxlJobGroupDao.findAll();
 
 		// filter group
-		List<XxlJobGroup> jobGroupList = JobInfoController.filterJobGroupByRole(request, jobGroupList_all);
+		List<GlodonJobGroup> jobGroupList = JobInfoController.filterJobGroupByRole(request, jobGroupList_all);
 		if (jobGroupList==null || jobGroupList.size()==0) {
-			throw new XxlJobException(I18nUtil.getString("jobgroup_empty"));
+			throw new GlodonJobException(I18nUtil.getString("jobgroup_empty"));
 		}
 
 		model.addAttribute("JobGroupList", jobGroupList);
 
 		// 任务
 		if (jobId > 0) {
-			XxlJobInfo jobInfo = xxlJobInfoDao.loadById(jobId);
+			GlodonJobInfo jobInfo = xxlJobInfoDao.loadById(jobId);
 			if (jobInfo == null) {
 				throw new RuntimeException(I18nUtil.getString("jobinfo_field_id") + I18nUtil.getString("system_unvalid"));
 			}
@@ -76,9 +76,9 @@ public class JobLogController {
 
 	@RequestMapping("/getJobsByGroup")
 	@ResponseBody
-	public ReturnT<List<XxlJobInfo>> getJobsByGroup(int jobGroup){
-		List<XxlJobInfo> list = xxlJobInfoDao.getJobsByGroup(jobGroup);
-		return new ReturnT<List<XxlJobInfo>>(list);
+	public ReturnT<List<GlodonJobInfo>> getJobsByGroup(int jobGroup){
+		List<GlodonJobInfo> list = xxlJobInfoDao.getJobsByGroup(jobGroup);
+		return new ReturnT<List<GlodonJobInfo>>(list);
 	}
 	
 	@RequestMapping("/pageList")
@@ -103,7 +103,7 @@ public class JobLogController {
 		}
 		
 		// page query
-		List<XxlJobLog> list = xxlJobLogDao.pageList(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
+		List<GlodonJobLog> list = xxlJobLogDao.pageList(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
 		int list_count = xxlJobLogDao.pageListCount(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
 		
 		// package result
@@ -119,7 +119,7 @@ public class JobLogController {
 
 		// base check
 		ReturnT<String> logStatue = ReturnT.SUCCESS;
-		XxlJobLog jobLog = xxlJobLogDao.load(id);
+		GlodonJobLog jobLog = xxlJobLogDao.load(id);
 		if (jobLog == null) {
             throw new RuntimeException(I18nUtil.getString("joblog_logid_unvalid"));
 		}
@@ -136,12 +136,12 @@ public class JobLogController {
 	@ResponseBody
 	public ReturnT<LogResult> logDetailCat(String executorAddress, long triggerTime, long logId, int fromLineNum){
 		try {
-			ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(executorAddress);
+			ExecutorBiz executorBiz = GlodonJobScheduler.getExecutorBiz(executorAddress);
 			ReturnT<LogResult> logResult = executorBiz.log(triggerTime, logId, fromLineNum);
 
 			// is end
             if (logResult.getContent()!=null && logResult.getContent().getFromLineNum() > logResult.getContent().getToLineNum()) {
-                XxlJobLog jobLog = xxlJobLogDao.load(logId);
+                GlodonJobLog jobLog = xxlJobLogDao.load(logId);
                 if (jobLog.getHandleCode() > 0) {
                     logResult.getContent().setEnd(true);
                 }
@@ -158,8 +158,8 @@ public class JobLogController {
 	@ResponseBody
 	public ReturnT<String> logKill(int id){
 		// base check
-		XxlJobLog log = xxlJobLogDao.load(id);
-		XxlJobInfo jobInfo = xxlJobInfoDao.loadById(log.getJobId());
+		GlodonJobLog log = xxlJobLogDao.load(id);
+		GlodonJobInfo jobInfo = xxlJobInfoDao.loadById(log.getJobId());
 		if (jobInfo==null) {
 			return new ReturnT<String>(500, I18nUtil.getString("jobinfo_glue_jobid_unvalid"));
 		}
@@ -170,7 +170,7 @@ public class JobLogController {
 		// request of kill
 		ReturnT<String> runResult = null;
 		try {
-			ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(log.getExecutorAddress());
+			ExecutorBiz executorBiz = GlodonJobScheduler.getExecutorBiz(log.getExecutorAddress());
 			runResult = executorBiz.kill(jobInfo.getId());
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

@@ -1,6 +1,6 @@
 package com.glodon.executor.sample.frameless;
 
-import com.glodon.executor.sample.frameless.config.FrameLessXxlJobConfig;
+import com.glodon.executor.sample.frameless.config.FrameLessGlodonJobConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,7 @@ public class FramelessApplication {
 
         try {
             // start
-            FrameLessXxlJobConfig.getInstance().initXxlJobExecutor();
+            FrameLessGlodonJobConfig.getInstance().initXxlJobExecutor();
 
             // Blocks until interrupted
             while (true) {
@@ -30,7 +30,7 @@ public class FramelessApplication {
             logger.error(e.getMessage(), e);
         } finally {
             // destory
-            FrameLessXxlJobConfig.getInstance().destoryXxlJobExecutor();
+            FrameLessGlodonJobConfig.getInstance().destoryXxlJobExecutor();
         }
 
     }

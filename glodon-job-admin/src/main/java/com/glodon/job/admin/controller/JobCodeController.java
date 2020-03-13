@@ -1,10 +1,10 @@
 package com.glodon.job.admin.controller;
 
-import com.glodon.job.admin.core.model.XxlJobInfo;
-import com.glodon.job.admin.core.model.XxlJobLogGlue;
+import com.glodon.job.admin.core.model.GlodonJobInfo;
+import com.glodon.job.admin.core.model.GlodonJobLogGlue;
 import com.glodon.job.admin.core.util.I18nUtil;
-import com.glodon.job.admin.dao.XxlJobInfoDao;
-import com.glodon.job.admin.dao.XxlJobLogGlueDao;
+import com.glodon.job.admin.dao.GlodonJobInfoDao;
+import com.glodon.job.admin.dao.GlodonJobLogGlueDao;
 import com.glodon.job.core.biz.model.ReturnT;
 import com.glodon.job.core.glue.GlueTypeEnum;
 import org.springframework.stereotype.Controller;
@@ -26,14 +26,14 @@ import java.util.List;
 public class JobCodeController {
 	
 	@Resource
-	private XxlJobInfoDao xxlJobInfoDao;
+	private GlodonJobInfoDao xxlJobInfoDao;
 	@Resource
-	private XxlJobLogGlueDao xxlJobLogGlueDao;
+	private GlodonJobLogGlueDao xxlJobLogGlueDao;
 
 	@RequestMapping
 	public String index(HttpServletRequest request, Model model, int jobId) {
-		XxlJobInfo jobInfo = xxlJobInfoDao.loadById(jobId);
-		List<XxlJobLogGlue> jobLogGlues = xxlJobLogGlueDao.findByJobId(jobId);
+		GlodonJobInfo jobInfo = xxlJobInfoDao.loadById(jobId);
+		List<GlodonJobLogGlue> jobLogGlues = xxlJobLogGlueDao.findByJobId(jobId);
 
 		if (jobInfo == null) {
 			throw new RuntimeException(I18nUtil.getString("jobinfo_glue_jobid_unvalid"));
@@ -63,7 +63,7 @@ public class JobCodeController {
 		if (glueRemark.length()<4 || glueRemark.length()>100) {
 			return new ReturnT<String>(500, I18nUtil.getString("jobinfo_glue_remark_limit"));
 		}
-		XxlJobInfo exists_jobInfo = xxlJobInfoDao.loadById(id);
+		GlodonJobInfo exists_jobInfo = xxlJobInfoDao.loadById(id);
 		if (exists_jobInfo == null) {
 			return new ReturnT<String>(500, I18nUtil.getString("jobinfo_glue_jobid_unvalid"));
 		}
@@ -77,7 +77,7 @@ public class JobCodeController {
 		xxlJobInfoDao.update(exists_jobInfo);
 
 		// log old code
-		XxlJobLogGlue xxlJobLogGlue = new XxlJobLogGlue();
+		GlodonJobLogGlue xxlJobLogGlue = new GlodonJobLogGlue();
 		xxlJobLogGlue.setJobId(exists_jobInfo.getId());
 		xxlJobLogGlue.setGlueType(exists_jobInfo.getGlueType());
 		xxlJobLogGlue.setGlueSource(glueSource);
