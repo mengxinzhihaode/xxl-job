@@ -31,22 +31,22 @@ public class GlodonJobServiceImpl implements GlodonJobService {
 	private static Logger logger = LoggerFactory.getLogger(GlodonJobServiceImpl.class);
 
 	@Resource
-	private GlodonJobGroupDao xxlJobGroupDao;
+	private GlodonJobGroupDao glodonJobGroupDao;
 	@Resource
-	private GlodonJobInfoDao xxlJobInfoDao;
+	private GlodonJobInfoDao glodonJobInfoDao;
 	@Resource
-	public GlodonJobLogDao xxlJobLogDao;
+	public GlodonJobLogDao glodonJobLogDao;
 	@Resource
-	private GlodonJobLogGlueDao xxlJobLogGlueDao;
+	private GlodonJobLogGlueDao glodonJobLogGlueDao;
 	@Resource
-	private GlodonJobLogReportDao xxlJobLogReportDao;
+	private GlodonJobLogReportDao glodonJobLogReportDao;
 	
 	@Override
 	public Map<String, Object> pageList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author) {
 
 		// page list
-		List<GlodonJobInfo> list = xxlJobInfoDao.pageList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
-		int list_count = xxlJobInfoDao.pageListCount(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
+		List<GlodonJobInfo> list = glodonJobInfoDao.pageList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
+		int list_count = glodonJobInfoDao.pageListCount(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
 		
 		// package result
 		Map<String, Object> maps = new HashMap<String, Object>();
@@ -59,7 +59,7 @@ public class GlodonJobServiceImpl implements GlodonJobService {
 	@Override
 	public ReturnT<String> add(GlodonJobInfo jobInfo) {
 		// valid
-		GlodonJobGroup group = xxlJobGroupDao.load(jobInfo.getJobGroup());
+		GlodonJobGroup group = glodonJobGroupDao.load(jobInfo.getJobGroup());
 		if (group == null) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_choose")+I18nUtil.getString("jobinfo_field_jobgroup")) );
 		}
@@ -95,7 +95,7 @@ public class GlodonJobServiceImpl implements GlodonJobService {
 			String[] childJobIds = jobInfo.getChildJobId().split(",");
 			for (String childJobIdItem: childJobIds) {
 				if (childJobIdItem!=null && childJobIdItem.trim().length()>0 && isNumeric(childJobIdItem)) {
-					GlodonJobInfo childJobInfo = xxlJobInfoDao.loadById(Integer.parseInt(childJobIdItem));
+					GlodonJobInfo childJobInfo = glodonJobInfoDao.loadById(Integer.parseInt(childJobIdItem));
 					if (childJobInfo==null) {
 						return new ReturnT<String>(ReturnT.FAIL_CODE,
 								MessageFormat.format((I18nUtil.getString("jobinfo_field_childJobId")+"({0})"+I18nUtil.getString("system_not_found")), childJobIdItem));
@@ -120,7 +120,7 @@ public class GlodonJobServiceImpl implements GlodonJobService {
 		jobInfo.setAddTime(new Date());
 		jobInfo.setUpdateTime(new Date());
 		jobInfo.setGlueUpdatetime(new Date());
-		xxlJobInfoDao.save(jobInfo);
+		glodonJobInfoDao.save(jobInfo);
 		if (jobInfo.getId() < 1) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_add")+I18nUtil.getString("system_fail")) );
 		}
@@ -162,7 +162,7 @@ public class GlodonJobServiceImpl implements GlodonJobService {
 			String[] childJobIds = jobInfo.getChildJobId().split(",");
 			for (String childJobIdItem: childJobIds) {
 				if (childJobIdItem!=null && childJobIdItem.trim().length()>0 && isNumeric(childJobIdItem)) {
-					GlodonJobInfo childJobInfo = xxlJobInfoDao.loadById(Integer.parseInt(childJobIdItem));
+					GlodonJobInfo childJobInfo = glodonJobInfoDao.loadById(Integer.parseInt(childJobIdItem));
 					if (childJobInfo==null) {
 						return new ReturnT<String>(ReturnT.FAIL_CODE,
 								MessageFormat.format((I18nUtil.getString("jobinfo_field_childJobId")+"({0})"+I18nUtil.getString("system_not_found")), childJobIdItem));
@@ -184,13 +184,13 @@ public class GlodonJobServiceImpl implements GlodonJobService {
 		}
 
 		// group valid
-		GlodonJobGroup jobGroup = xxlJobGroupDao.load(jobInfo.getJobGroup());
+		GlodonJobGroup jobGroup = glodonJobGroupDao.load(jobInfo.getJobGroup());
 		if (jobGroup == null) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_jobgroup")+I18nUtil.getString("system_unvalid")) );
 		}
 
 		// stage job info
-		GlodonJobInfo exists_jobInfo = xxlJobInfoDao.loadById(jobInfo.getId());
+		GlodonJobInfo exists_jobInfo = glodonJobInfoDao.loadById(jobInfo.getId());
 		if (exists_jobInfo == null) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_id")+I18nUtil.getString("system_not_found")) );
 		}
@@ -225,7 +225,7 @@ public class GlodonJobServiceImpl implements GlodonJobService {
 		exists_jobInfo.setTriggerNextTime(nextTriggerTime);
 
 		exists_jobInfo.setUpdateTime(new Date());
-        xxlJobInfoDao.update(exists_jobInfo);
+        glodonJobInfoDao.update(exists_jobInfo);
 
 
 		return ReturnT.SUCCESS;
@@ -233,25 +233,25 @@ public class GlodonJobServiceImpl implements GlodonJobService {
 
 	@Override
 	public ReturnT<String> remove(int id) {
-		GlodonJobInfo xxlJobInfo = xxlJobInfoDao.loadById(id);
-		if (xxlJobInfo == null) {
+		GlodonJobInfo glodonJobInfo = glodonJobInfoDao.loadById(id);
+		if (glodonJobInfo == null) {
 			return ReturnT.SUCCESS;
 		}
 
-		xxlJobInfoDao.delete(id);
-		xxlJobLogDao.delete(id);
-		xxlJobLogGlueDao.deleteByJobId(id);
+		glodonJobInfoDao.delete(id);
+		glodonJobLogDao.delete(id);
+		glodonJobLogGlueDao.deleteByJobId(id);
 		return ReturnT.SUCCESS;
 	}
 
 	@Override
 	public ReturnT<String> start(int id) {
-		GlodonJobInfo xxlJobInfo = xxlJobInfoDao.loadById(id);
+		GlodonJobInfo glodonJobInfo = glodonJobInfoDao.loadById(id);
 
 		// next trigger time (5s后生效，避开预读周期)
 		long nextTriggerTime = 0;
 		try {
-			Date nextValidTime = new CronExpression(xxlJobInfo.getJobCron()).getNextValidTimeAfter(new Date(System.currentTimeMillis() + JobScheduleHelper.PRE_READ_MS));
+			Date nextValidTime = new CronExpression(glodonJobInfo.getJobCron()).getNextValidTimeAfter(new Date(System.currentTimeMillis() + JobScheduleHelper.PRE_READ_MS));
 			if (nextValidTime == null) {
 				return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("jobinfo_field_cron_never_fire"));
 			}
@@ -261,35 +261,35 @@ public class GlodonJobServiceImpl implements GlodonJobService {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("jobinfo_field_cron_unvalid")+" | "+ e.getMessage());
 		}
 
-		xxlJobInfo.setTriggerStatus(1);
-		xxlJobInfo.setTriggerLastTime(0);
-		xxlJobInfo.setTriggerNextTime(nextTriggerTime);
+		glodonJobInfo.setTriggerStatus(1);
+		glodonJobInfo.setTriggerLastTime(0);
+		glodonJobInfo.setTriggerNextTime(nextTriggerTime);
 
-		xxlJobInfo.setUpdateTime(new Date());
-		xxlJobInfoDao.update(xxlJobInfo);
+		glodonJobInfo.setUpdateTime(new Date());
+		glodonJobInfoDao.update(glodonJobInfo);
 		return ReturnT.SUCCESS;
 	}
 
 	@Override
 	public ReturnT<String> stop(int id) {
-		GlodonJobInfo xxlJobInfo = xxlJobInfoDao.loadById(id);
+		GlodonJobInfo glodonJobInfo = glodonJobInfoDao.loadById(id);
 
-		xxlJobInfo.setTriggerStatus(0);
-		xxlJobInfo.setTriggerLastTime(0);
-		xxlJobInfo.setTriggerNextTime(0);
+		glodonJobInfo.setTriggerStatus(0);
+		glodonJobInfo.setTriggerLastTime(0);
+		glodonJobInfo.setTriggerNextTime(0);
 
-		xxlJobInfo.setUpdateTime(new Date());
-		xxlJobInfoDao.update(xxlJobInfo);
+		glodonJobInfo.setUpdateTime(new Date());
+		glodonJobInfoDao.update(glodonJobInfo);
 		return ReturnT.SUCCESS;
 	}
 
 	@Override
 	public Map<String, Object> dashboardInfo() {
 
-		int jobInfoCount = xxlJobInfoDao.findAllCount();
+		int jobInfoCount = glodonJobInfoDao.findAllCount();
 		int jobLogCount = 0;
 		int jobLogSuccessCount = 0;
-		GlodonJobLogReport xxlJobLogReport = xxlJobLogReportDao.queryLogReportTotal();
+		GlodonJobLogReport xxlJobLogReport = glodonJobLogReportDao.queryLogReportTotal();
 		if (xxlJobLogReport != null) {
 			jobLogCount = xxlJobLogReport.getRunningCount() + xxlJobLogReport.getSucCount() + xxlJobLogReport.getFailCount();
 			jobLogSuccessCount = xxlJobLogReport.getSucCount();
@@ -297,7 +297,7 @@ public class GlodonJobServiceImpl implements GlodonJobService {
 
 		// executor count
 		Set<String> executorAddressSet = new HashSet<String>();
-		List<GlodonJobGroup> groupList = xxlJobGroupDao.findAll();
+		List<GlodonJobGroup> groupList = glodonJobGroupDao.findAll();
 
 		if (groupList!=null && !groupList.isEmpty()) {
 			for (GlodonJobGroup group: groupList) {
@@ -329,7 +329,7 @@ public class GlodonJobServiceImpl implements GlodonJobService {
 		int triggerCountSucTotal = 0;
 		int triggerCountFailTotal = 0;
 
-		List<GlodonJobLogReport> logReportList = xxlJobLogReportDao.queryLogReport(startDate, endDate);
+		List<GlodonJobLogReport> logReportList = glodonJobLogReportDao.queryLogReport(startDate, endDate);
 
 		if (logReportList!=null && logReportList.size()>0) {
 			for (GlodonJobLogReport item: logReportList) {

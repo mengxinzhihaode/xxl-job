@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  * 3、执行日志：需要通过 "GlodonJobLogger.log" 打印执行日志；
  *
  */
-@Component
+//@Component
 public class SampleGlodonJob {
     private static Logger logger = LoggerFactory.getLogger(SampleGlodonJob.class);
 

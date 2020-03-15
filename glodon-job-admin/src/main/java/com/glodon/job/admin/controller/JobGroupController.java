@@ -25,17 +25,17 @@ import java.util.*;
 public class JobGroupController {
 
 	@Resource
-	public GlodonJobInfoDao xxlJobInfoDao;
+	public GlodonJobInfoDao glodonJobInfoDao;
 	@Resource
-	public GlodonJobGroupDao xxlJobGroupDao;
+	public GlodonJobGroupDao glodonJobGroupDao;
 	@Resource
-	private GlodonJobRegistryDao xxlJobRegistryDao;
+	private GlodonJobRegistryDao glodonJobRegistryDao;
 
 	@RequestMapping
 	public String index(Model model) {
 
 		// job group (executor)
-		List<GlodonJobGroup> list = xxlJobGroupDao.findAll();
+		List<GlodonJobGroup> list = glodonJobGroupDao.findAll();
 
 		model.addAttribute("list", list);
 		return "jobgroup/jobgroup.index";
@@ -67,7 +67,7 @@ public class JobGroupController {
 			}
 		}
 
-		int ret = xxlJobGroupDao.save(xxlJobGroup);
+		int ret = glodonJobGroupDao.save(xxlJobGroup);
 		return (ret>0)?ReturnT.SUCCESS:ReturnT.FAIL;
 	}
 
@@ -110,13 +110,13 @@ public class JobGroupController {
 			}
 		}
 
-		int ret = xxlJobGroupDao.update(xxlJobGroup);
+		int ret = glodonJobGroupDao.update(xxlJobGroup);
 		return (ret>0)?ReturnT.SUCCESS:ReturnT.FAIL;
 	}
 
 	private List<String> findRegistryByAppName(String appNameParam){
 		HashMap<String, List<String>> appAddressMap = new HashMap<String, List<String>>();
-		List<GlodonJobRegistry> list = xxlJobRegistryDao.findAll(RegistryConfig.DEAD_TIMEOUT, new Date());
+		List<GlodonJobRegistry> list = glodonJobRegistryDao.findAll(RegistryConfig.DEAD_TIMEOUT, new Date());
 		if (list != null) {
 			for (GlodonJobRegistry item: list) {
 				if (RegistryConfig.RegistType.EXECUTOR.name().equals(item.getRegistryGroup())) {
@@ -141,24 +141,24 @@ public class JobGroupController {
 	public ReturnT<String> remove(int id){
 
 		// valid
-		int count = xxlJobInfoDao.pageListCount(0, 10, id, -1,  null, null, null);
+		int count = glodonJobInfoDao.pageListCount(0, 10, id, -1,  null, null, null);
 		if (count > 0) {
 			return new ReturnT<String>(500, I18nUtil.getString("jobgroup_del_limit_0") );
 		}
 
-		List<GlodonJobGroup> allList = xxlJobGroupDao.findAll();
+		List<GlodonJobGroup> allList = glodonJobGroupDao.findAll();
 		if (allList.size() == 1) {
 			return new ReturnT<String>(500, I18nUtil.getString("jobgroup_del_limit_1") );
 		}
 
-		int ret = xxlJobGroupDao.remove(id);
+		int ret = glodonJobGroupDao.remove(id);
 		return (ret>0)?ReturnT.SUCCESS:ReturnT.FAIL;
 	}
 
 	@RequestMapping("/loadById")
 	@ResponseBody
 	public ReturnT<GlodonJobGroup> loadById(int id){
-		GlodonJobGroup jobGroup = xxlJobGroupDao.load(id);
+		GlodonJobGroup jobGroup = glodonJobGroupDao.load(id);
 		return jobGroup!=null?new ReturnT<GlodonJobGroup>(jobGroup):new ReturnT<GlodonJobGroup>(ReturnT.FAIL_CODE, null);
 	}
 

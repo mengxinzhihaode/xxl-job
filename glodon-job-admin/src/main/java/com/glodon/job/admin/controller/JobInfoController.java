@@ -36,9 +36,9 @@ import java.util.*;
 public class JobInfoController {
 
 	@Resource
-	private GlodonJobGroupDao xxlJobGroupDao;
+	private GlodonJobGroupDao glodonJobGroupDao;
 	@Resource
-	private GlodonJobService xxlJobService;
+	private GlodonJobService glodonJobService;
 	
 	@RequestMapping
 	public String index(HttpServletRequest request, Model model, @RequestParam(required = false, defaultValue = "-1") int jobGroup) {
@@ -49,7 +49,7 @@ public class JobInfoController {
 		model.addAttribute("ExecutorBlockStrategyEnum", ExecutorBlockStrategyEnum.values());	    // 阻塞处理策略-字典
 
 		// 执行器列表
-		List<GlodonJobGroup> jobGroupList_all =  xxlJobGroupDao.findAll();
+		List<GlodonJobGroup> jobGroupList_all =  glodonJobGroupDao.findAll();
 
 		// filter group
 		List<GlodonJobGroup> jobGroupList = filterJobGroupByRole(request, jobGroupList_all);
@@ -96,37 +96,37 @@ public class JobInfoController {
 			@RequestParam(required = false, defaultValue = "10") int length,
 			int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author) {
 		
-		return xxlJobService.pageList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
+		return glodonJobService.pageList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
 	}
 	
 	@RequestMapping("/add")
 	@ResponseBody
 	public ReturnT<String> add(GlodonJobInfo jobInfo) {
-		return xxlJobService.add(jobInfo);
+		return glodonJobService.add(jobInfo);
 	}
 	
 	@RequestMapping("/update")
 	@ResponseBody
 	public ReturnT<String> update(GlodonJobInfo jobInfo) {
-		return xxlJobService.update(jobInfo);
+		return glodonJobService.update(jobInfo);
 	}
 	
 	@RequestMapping("/remove")
 	@ResponseBody
 	public ReturnT<String> remove(int id) {
-		return xxlJobService.remove(id);
+		return glodonJobService.remove(id);
 	}
 	
 	@RequestMapping("/stop")
 	@ResponseBody
 	public ReturnT<String> pause(int id) {
-		return xxlJobService.stop(id);
+		return glodonJobService.stop(id);
 	}
 	
 	@RequestMapping("/start")
 	@ResponseBody
 	public ReturnT<String> start(int id) {
-		return xxlJobService.start(id);
+		return glodonJobService.start(id);
 	}
 	
 	@RequestMapping("/trigger")

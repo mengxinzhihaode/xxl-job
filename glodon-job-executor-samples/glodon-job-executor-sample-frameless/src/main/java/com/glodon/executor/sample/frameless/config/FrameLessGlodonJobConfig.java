@@ -48,7 +48,7 @@ public class FrameLessGlodonJobConfig {
         glodonJobExecutor.setAppName(xxlJobProp.getProperty("xxl.job.executor.appname"));
         glodonJobExecutor.setIp(xxlJobProp.getProperty("xxl.job.executor.ip"));
         glodonJobExecutor.setPort(Integer.valueOf(xxlJobProp.getProperty("xxl.job.executor.port")));
-        glodonJobExecutor.setAccessToken(xxlJobProp.getProperty("xxl.job.accessToken"));
+        glodonJobExecutor.setAccessToken(xxlJobProp.getProperty("glodon.job.accessToken"));
         glodonJobExecutor.setLogPath(xxlJobProp.getProperty("xxl.job.executor.logpath"));
         glodonJobExecutor.setLogRetentionDays(Integer.valueOf(xxlJobProp.getProperty("xxl.job.executor.logretentiondays")));
 

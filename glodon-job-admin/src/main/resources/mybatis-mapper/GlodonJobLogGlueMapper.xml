@@ -3,7 +3,7 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.glodon.job.admin.dao.GlodonJobLogGlueDao">
 	
-	<resultMap id="XxlJobLogGlue" type="com.glodon.job.admin.core.model.GlodonJobLogGlue" >
+	<resultMap id="GlodonJobLogGlue" type="com.glodon.job.admin.core.model.GlodonJobLogGlue" >
 		<result column="id" property="id" />
 	    <result column="job_id" property="jobId" />
 		<result column="glue_type" property="glueType" />
@@ -44,7 +44,7 @@
 		</selectKey>-->
 	</insert>
 	
-	<select id="findByJobId" parameterType="java.lang.Integer" resultMap="XxlJobLogGlue">
+	<select id="findByJobId" parameterType="java.lang.Integer" resultMap="GlodonJobLogGlue">
 		SELECT <include refid="Base_Column_List" />
 		FROM glodon_job_logglue AS t
 		WHERE t.job_id = #{jobId}

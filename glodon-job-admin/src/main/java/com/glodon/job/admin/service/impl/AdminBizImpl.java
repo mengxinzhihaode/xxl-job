@@ -65,11 +65,11 @@ public class AdminBizImpl implements AdminBiz {
         // trigger success, to trigger child job
         String callbackMsg = null;
         if (IJobHandler.SUCCESS.getCode() == handleCallbackParam.getExecuteResult().getCode()) {
-            GlodonJobInfo xxlJobInfo = glodonJobInfoDao.loadById(log.getJobId());
-            if (xxlJobInfo!=null && xxlJobInfo.getChildJobId()!=null && xxlJobInfo.getChildJobId().trim().length()>0) {
+            GlodonJobInfo glodonJobInfo = glodonJobInfoDao.loadById(log.getJobId());
+            if (glodonJobInfo!=null && glodonJobInfo.getChildJobId()!=null && glodonJobInfo.getChildJobId().trim().length()>0) {
                 callbackMsg = "<br><br><span style=\"color:#00c0ef;\" > >>>>>>>>>>>"+ I18nUtil.getString("jobconf_trigger_child_run") +"<<<<<<<<<<< </span><br>";
 
-                String[] childJobIds = xxlJobInfo.getChildJobId().split(",");
+                String[] childJobIds = glodonJobInfo.getChildJobId().split(",");
                 for (int i = 0; i < childJobIds.length; i++) {
                     int childJobId = (childJobIds[i]!=null && childJobIds[i].trim().length()>0 && isNumeric(childJobIds[i]))?Integer.valueOf(childJobIds[i]):-1;
                     if (childJobId > 0) {

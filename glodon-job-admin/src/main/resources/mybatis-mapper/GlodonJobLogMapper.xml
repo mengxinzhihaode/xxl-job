@@ -3,7 +3,7 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.glodon.job.admin.dao.GlodonJobLogDao">
 	
-	<resultMap id="XxlJobLog" type="com.glodon.job.admin.core.model.GlodonJobLog" >
+	<resultMap id="GlodonJobLog" type="com.glodon.job.admin.core.model.GlodonJobLog" >
 		<result column="id" property="id" />
 
 		<result column="job_group" property="jobGroup" />
@@ -44,7 +44,7 @@
 		t.alarm_status
 	</sql>
 	
-	<select id="pageList" resultMap="XxlJobLog">
+	<select id="pageList" resultMap="GlodonJobLog">
 		SELECT <include refid="Base_Column_List" />
 		FROM glodon_job_log AS t
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
@@ -110,7 +110,7 @@
 		</trim>
 	</select>
 	
-	<select id="load" parameterType="java.lang.Long" resultMap="XxlJobLog">
+	<select id="load" parameterType="java.lang.Long" resultMap="GlodonJobLog">
 		SELECT <include refid="Base_Column_List" />
 		FROM glodon_job_log AS t
 		WHERE t.id = #{id}

@@ -28,7 +28,7 @@ import java.util.Map;
 public class IndexController {
 
 	@Resource
-	private GlodonJobService xxlJobService;
+	private GlodonJobService glodonJobService;
 	@Resource
 	private LoginService loginService;
 
@@ -36,7 +36,7 @@ public class IndexController {
 	@RequestMapping("/")
 	public String index(Model model) {
 
-		Map<String, Object> dashboardMap = xxlJobService.dashboardInfo();
+		Map<String, Object> dashboardMap = glodonJobService.dashboardInfo();
 		model.addAllAttributes(dashboardMap);
 
 		return "index";
@@ -45,7 +45,7 @@ public class IndexController {
     @RequestMapping("/chartInfo")
 	@ResponseBody
 	public ReturnT<Map<String, Object>> chartInfo(Date startDate, Date endDate) {
-        ReturnT<Map<String, Object>> chartInfo = xxlJobService.chartInfo(startDate, endDate);
+        ReturnT<Map<String, Object>> chartInfo = glodonJobService.chartInfo(startDate, endDate);
         return chartInfo;
     }
 	

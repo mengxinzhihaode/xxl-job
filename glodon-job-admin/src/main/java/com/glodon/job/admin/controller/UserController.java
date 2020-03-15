@@ -30,16 +30,16 @@ import java.util.Map;
 public class UserController {
 
     @Resource
-    private GlodonJobUserDao xxlJobUserDao;
+    private GlodonJobUserDao glodonJobUserDao;
     @Resource
-    private GlodonJobGroupDao xxlJobGroupDao;
+    private GlodonJobGroupDao glodonJobGroupDao;
 
     @RequestMapping
     @PermissionLimit(adminuser = true)
     public String index(Model model) {
 
         // 执行器列表
-        List<GlodonJobGroup> groupList = xxlJobGroupDao.findAll();
+        List<GlodonJobGroup> groupList = glodonJobGroupDao.findAll();
         model.addAttribute("groupList", groupList);
 
         return "user/user.index";
@@ -53,8 +53,8 @@ public class UserController {
                                         String username, int role) {
 
         // page list
-        List<GlodonJobUser> list = xxlJobUserDao.pageList(start, length, username, role);
-        int list_count = xxlJobUserDao.pageListCount(start, length, username, role);
+        List<GlodonJobUser> list = glodonJobUserDao.pageList(start, length, username, role);
+        int list_count = glodonJobUserDao.pageListCount(start, length, username, role);
 
         // package result
         Map<String, Object> maps = new HashMap<String, Object>();
@@ -89,13 +89,13 @@ public class UserController {
         xxlJobUser.setPassword(DigestUtils.md5DigestAsHex(xxlJobUser.getPassword().getBytes()));
 
         // check repeat
-        GlodonJobUser existUser = xxlJobUserDao.loadByUserName(xxlJobUser.getUsername());
+        GlodonJobUser existUser = glodonJobUserDao.loadByUserName(xxlJobUser.getUsername());
         if (existUser != null) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("user_username_repeat") );
         }
 
         // write
-        xxlJobUserDao.save(xxlJobUser);
+        glodonJobUserDao.save(xxlJobUser);
         return ReturnT.SUCCESS;
     }
 
@@ -123,7 +123,7 @@ public class UserController {
         }
 
         // write
-        xxlJobUserDao.update(xxlJobUser);
+        glodonJobUserDao.update(xxlJobUser);
         return ReturnT.SUCCESS;
     }
 
@@ -138,7 +138,7 @@ public class UserController {
             return new ReturnT<String>(ReturnT.FAIL.getCode(), I18nUtil.getString("user_update_loginuser_limit"));
         }
 
-        xxlJobUserDao.delete(id);
+        glodonJobUserDao.delete(id);
         return ReturnT.SUCCESS;
     }
 
@@ -162,9 +162,9 @@ public class UserController {
         GlodonJobUser loginUser = (GlodonJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
 
         // do write
-        GlodonJobUser existUser = xxlJobUserDao.loadByUserName(loginUser.getUsername());
+        GlodonJobUser existUser = glodonJobUserDao.loadByUserName(loginUser.getUsername());
         existUser.setPassword(md5Password);
-        xxlJobUserDao.update(existUser);
+        glodonJobUserDao.update(existUser);
 
         return ReturnT.SUCCESS;
     }

@@ -38,17 +38,17 @@ public class JobLogController {
 	private static Logger logger = LoggerFactory.getLogger(JobLogController.class);
 
 	@Resource
-	private GlodonJobGroupDao xxlJobGroupDao;
+	private GlodonJobGroupDao glodonJobGroupDao;
 	@Resource
-	public GlodonJobInfoDao xxlJobInfoDao;
+	public GlodonJobInfoDao glodonJobInfoDao;
 	@Resource
-	public GlodonJobLogDao xxlJobLogDao;
+	public GlodonJobLogDao glodonJobLogDao;
 
 	@RequestMapping
 	public String index(HttpServletRequest request, Model model, @RequestParam(required = false, defaultValue = "0") Integer jobId) {
 
 		// 执行器列表
-		List<GlodonJobGroup> jobGroupList_all =  xxlJobGroupDao.findAll();
+		List<GlodonJobGroup> jobGroupList_all =  glodonJobGroupDao.findAll();
 
 		// filter group
 		List<GlodonJobGroup> jobGroupList = JobInfoController.filterJobGroupByRole(request, jobGroupList_all);
@@ -60,7 +60,7 @@ public class JobLogController {
 
 		// 任务
 		if (jobId > 0) {
-			GlodonJobInfo jobInfo = xxlJobInfoDao.loadById(jobId);
+			GlodonJobInfo jobInfo = glodonJobInfoDao.loadById(jobId);
 			if (jobInfo == null) {
 				throw new RuntimeException(I18nUtil.getString("jobinfo_field_id") + I18nUtil.getString("system_unvalid"));
 			}
@@ -77,7 +77,7 @@ public class JobLogController {
 	@RequestMapping("/getJobsByGroup")
 	@ResponseBody
 	public ReturnT<List<GlodonJobInfo>> getJobsByGroup(int jobGroup){
-		List<GlodonJobInfo> list = xxlJobInfoDao.getJobsByGroup(jobGroup);
+		List<GlodonJobInfo> list = glodonJobInfoDao.getJobsByGroup(jobGroup);
 		return new ReturnT<List<GlodonJobInfo>>(list);
 	}
 	
@@ -103,8 +103,8 @@ public class JobLogController {
 		}
 		
 		// page query
-		List<GlodonJobLog> list = xxlJobLogDao.pageList(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
-		int list_count = xxlJobLogDao.pageListCount(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
+		List<GlodonJobLog> list = glodonJobLogDao.pageList(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
+		int list_count = glodonJobLogDao.pageListCount(start, length, jobGroup, jobId, triggerTimeStart, triggerTimeEnd, logStatus);
 		
 		// package result
 		Map<String, Object> maps = new HashMap<String, Object>();
@@ -119,7 +119,7 @@ public class JobLogController {
 
 		// base check
 		ReturnT<String> logStatue = ReturnT.SUCCESS;
-		GlodonJobLog jobLog = xxlJobLogDao.load(id);
+		GlodonJobLog jobLog = glodonJobLogDao.load(id);
 		if (jobLog == null) {
             throw new RuntimeException(I18nUtil.getString("joblog_logid_unvalid"));
 		}
@@ -141,7 +141,7 @@ public class JobLogController {
 
 			// is end
             if (logResult.getContent()!=null && logResult.getContent().getFromLineNum() > logResult.getContent().getToLineNum()) {
-                GlodonJobLog jobLog = xxlJobLogDao.load(logId);
+                GlodonJobLog jobLog = glodonJobLogDao.load(logId);
                 if (jobLog.getHandleCode() > 0) {
                     logResult.getContent().setEnd(true);
                 }
@@ -158,8 +158,8 @@ public class JobLogController {
 	@ResponseBody
 	public ReturnT<String> logKill(int id){
 		// base check
-		GlodonJobLog log = xxlJobLogDao.load(id);
-		GlodonJobInfo jobInfo = xxlJobInfoDao.loadById(log.getJobId());
+		GlodonJobLog log = glodonJobLogDao.load(id);
+		GlodonJobInfo jobInfo = glodonJobInfoDao.loadById(log.getJobId());
 		if (jobInfo==null) {
 			return new ReturnT<String>(500, I18nUtil.getString("jobinfo_glue_jobid_unvalid"));
 		}
@@ -181,7 +181,7 @@ public class JobLogController {
 			log.setHandleCode(ReturnT.FAIL_CODE);
 			log.setHandleMsg( I18nUtil.getString("joblog_kill_log_byman")+":" + (runResult.getMsg()!=null?runResult.getMsg():""));
 			log.setHandleTime(new Date());
-			xxlJobLogDao.updateHandleInfo(log);
+			glodonJobLogDao.updateHandleInfo(log);
 			return new ReturnT<String>(runResult.getMsg());
 		} else {
 			return new ReturnT<String>(500, runResult.getMsg());
@@ -218,9 +218,9 @@ public class JobLogController {
 
 		List<Long> logIds = null;
 		do {
-			logIds = xxlJobLogDao.findClearLogIds(jobGroup, jobId, clearBeforeTime, clearBeforeNum, 1000);
+			logIds = glodonJobLogDao.findClearLogIds(jobGroup, jobId, clearBeforeTime, clearBeforeNum, 1000);
 			if (logIds!=null && logIds.size()>0) {
-				xxlJobLogDao.clearLog(logIds);
+				glodonJobLogDao.clearLog(logIds);
 			}
 		} while (logIds!=null && logIds.size()>0);
 

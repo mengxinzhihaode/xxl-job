@@ -33,7 +33,7 @@ public interface GlodonJobInfoDao {
 
 	public GlodonJobInfo loadById(@Param("id") int id);
 	
-	public int update(GlodonJobInfo xxlJobInfo);
+	public int update(GlodonJobInfo glodonJobInfo);
 	
 	public int delete(@Param("id") long id);
 
@@ -43,7 +43,7 @@ public interface GlodonJobInfoDao {
 
 	public List<GlodonJobInfo> scheduleJobQuery(@Param("maxNextTime") long maxNextTime, @Param("pagesize") int pagesize );
 
-	public int scheduleUpdate(GlodonJobInfo xxlJobInfo);
+	public int scheduleUpdate(GlodonJobInfo glodonJobInfo);
 
 
 }

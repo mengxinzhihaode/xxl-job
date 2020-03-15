@@ -2,6 +2,8 @@ package com.glodon.job.admin.core.conf;
 
 import com.glodon.job.admin.core.scheduler.GlodonJobScheduler;
 import com.glodon.job.admin.dao.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +22,9 @@ import javax.sql.DataSource;
 @Component
 public class GlodonJobAdminConfig implements InitializingBean, DisposableBean {
 
+    private Logger logger = LoggerFactory.getLogger(GlodonJobAdminConfig.class);
+
+
     private static GlodonJobAdminConfig adminConfig = null;
     public static GlodonJobAdminConfig getAdminConfig() {
         return adminConfig;
@@ -32,6 +37,8 @@ public class GlodonJobAdminConfig implements InitializingBean, DisposableBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        logger.info(">>>>>>>>>>> GlodonJobAdminConfig start");
+
         adminConfig = this;
 
         glodonJobScheduler = new GlodonJobScheduler();
@@ -47,22 +54,22 @@ public class GlodonJobAdminConfig implements InitializingBean, DisposableBean {
     // ---------------------- XxlJobScheduler ----------------------
 
     // conf
-    @Value("${xxl.job.i18n}")
+    @Value("${glodon.job.i18n}")
     private String i18n;
 
-    @Value("${xxl.job.accessToken}")
+    @Value("${glodon.job.accessToken}")
     private String accessToken;
 
     @Value("${spring.mail.username}")
     private String emailUserName;
 
-    @Value("${xxl.job.triggerpool.fast.max}")
+    @Value("${glodon.job.triggerpool.fast.max}")
     private int triggerPoolFastMax;
 
-    @Value("${xxl.job.triggerpool.slow.max}")
+    @Value("${glodon.job.triggerpool.slow.max}")
     private int triggerPoolSlowMax;
 
-    @Value("${xxl.job.logretentiondays}")
+    @Value("${glodon.job.logretentiondays}")
     private int logretentiondays;
 
     // dao, service

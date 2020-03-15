@@ -26,14 +26,14 @@ import java.util.List;
 public class JobCodeController {
 	
 	@Resource
-	private GlodonJobInfoDao xxlJobInfoDao;
+	private GlodonJobInfoDao glodonJobInfoDao;
 	@Resource
-	private GlodonJobLogGlueDao xxlJobLogGlueDao;
+	private GlodonJobLogGlueDao glodonJobLogGlueDao;
 
 	@RequestMapping
 	public String index(HttpServletRequest request, Model model, int jobId) {
-		GlodonJobInfo jobInfo = xxlJobInfoDao.loadById(jobId);
-		List<GlodonJobLogGlue> jobLogGlues = xxlJobLogGlueDao.findByJobId(jobId);
+		GlodonJobInfo jobInfo = glodonJobInfoDao.loadById(jobId);
+		List<GlodonJobLogGlue> jobLogGlues = glodonJobLogGlueDao.findByJobId(jobId);
 
 		if (jobInfo == null) {
 			throw new RuntimeException(I18nUtil.getString("jobinfo_glue_jobid_unvalid"));
@@ -63,7 +63,7 @@ public class JobCodeController {
 		if (glueRemark.length()<4 || glueRemark.length()>100) {
 			return new ReturnT<String>(500, I18nUtil.getString("jobinfo_glue_remark_limit"));
 		}
-		GlodonJobInfo exists_jobInfo = xxlJobInfoDao.loadById(id);
+		GlodonJobInfo exists_jobInfo = glodonJobInfoDao.loadById(id);
 		if (exists_jobInfo == null) {
 			return new ReturnT<String>(500, I18nUtil.getString("jobinfo_glue_jobid_unvalid"));
 		}
@@ -74,7 +74,7 @@ public class JobCodeController {
 		exists_jobInfo.setGlueUpdatetime(new Date());
 
 		exists_jobInfo.setUpdateTime(new Date());
-		xxlJobInfoDao.update(exists_jobInfo);
+		glodonJobInfoDao.update(exists_jobInfo);
 
 		// log old code
 		GlodonJobLogGlue xxlJobLogGlue = new GlodonJobLogGlue();
@@ -85,10 +85,10 @@ public class JobCodeController {
 
 		xxlJobLogGlue.setAddTime(new Date());
 		xxlJobLogGlue.setUpdateTime(new Date());
-		xxlJobLogGlueDao.save(xxlJobLogGlue);
+		glodonJobLogGlueDao.save(xxlJobLogGlue);
 
 		// remove code backup more than 30
-		xxlJobLogGlueDao.removeOld(exists_jobInfo.getId(), 30);
+		glodonJobLogGlueDao.removeOld(exists_jobInfo.getId(), 30);
 
 		return ReturnT.SUCCESS;
 	}

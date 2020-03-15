@@ -23,21 +23,21 @@ public class LoginService {
     public static final String LOGIN_IDENTITY_KEY = "XXL_JOB_LOGIN_IDENTITY";
 
     @Resource
-    private GlodonJobUserDao xxlJobUserDao;
+    private GlodonJobUserDao glodonJobUserDao;
 
 
-    private String makeToken(GlodonJobUser xxlJobUser){
-        String tokenJson = JacksonUtil.writeValueAsString(xxlJobUser);
+    private String makeToken(GlodonJobUser glodonJobUser){
+        String tokenJson = JacksonUtil.writeValueAsString(glodonJobUser);
         String tokenHex = new BigInteger(tokenJson.getBytes()).toString(16);
         return tokenHex;
     }
     private GlodonJobUser parseToken(String tokenHex){
-        GlodonJobUser xxlJobUser = null;
+        GlodonJobUser glodonJobUser = null;
         if (tokenHex != null) {
             String tokenJson = new String(new BigInteger(tokenHex, 16).toByteArray());      // username_password(md5)
-            xxlJobUser = JacksonUtil.readValue(tokenJson, GlodonJobUser.class);
+            glodonJobUser = JacksonUtil.readValue(tokenJson, GlodonJobUser.class);
         }
-        return xxlJobUser;
+        return glodonJobUser;
     }
 
 
@@ -49,16 +49,16 @@ public class LoginService {
         }
 
         // valid passowrd
-        GlodonJobUser xxlJobUser = xxlJobUserDao.loadByUserName(username);
-        if (xxlJobUser == null) {
+        GlodonJobUser glodonJobUser = glodonJobUserDao.loadByUserName(username);
+        if (glodonJobUser == null) {
             return new ReturnT<String>(500, I18nUtil.getString("login_param_unvalid"));
         }
         String passwordMd5 = DigestUtils.md5DigestAsHex(password.getBytes());
-        if (!passwordMd5.equals(xxlJobUser.getPassword())) {
+        if (!passwordMd5.equals(glodonJobUser.getPassword())) {
             return new ReturnT<String>(500, I18nUtil.getString("login_param_unvalid"));
         }
 
-        String loginToken = makeToken(xxlJobUser);
+        String loginToken = makeToken(glodonJobUser);
 
         // do login
         CookieUtil.set(response, LOGIN_IDENTITY_KEY, loginToken, ifRemember);
@@ -92,7 +92,7 @@ public class LoginService {
                 logout(request, response);
             }
             if (cookieUser != null) {
-                GlodonJobUser dbUser = xxlJobUserDao.loadByUserName(cookieUser.getUsername());
+                GlodonJobUser dbUser = glodonJobUserDao.loadByUserName(cookieUser.getUsername());
                 if (dbUser != null) {
                     if (cookieUser.getPassword().equals(dbUser.getPassword())) {
                         return dbUser;

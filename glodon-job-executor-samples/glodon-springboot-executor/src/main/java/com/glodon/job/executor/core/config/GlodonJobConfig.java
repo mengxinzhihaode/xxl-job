@@ -36,15 +36,15 @@ public class GlodonJobConfig {
     @Bean
     public GlodonJobSpringExecutor glodonJobExecutor() {
         logger.info(">>>>>>>>>>> glodon-job config init.");
-        GlodonJobSpringExecutor xxlJobSpringExecutor = new GlodonJobSpringExecutor();
-        xxlJobSpringExecutor.setAdminAddresses(adminAddresses);
-        xxlJobSpringExecutor.setAppName(appName);
-        xxlJobSpringExecutor.setIp(ip);
-        xxlJobSpringExecutor.setPort(port);
-        xxlJobSpringExecutor.setAccessToken(accessToken);
-        xxlJobSpringExecutor.setLogPath(logPath);
-        xxlJobSpringExecutor.setLogRetentionDays(logRetentionDays);
-        return xxlJobSpringExecutor;
+        GlodonJobSpringExecutor glodonJobSpringExecutor = new GlodonJobSpringExecutor();
+        glodonJobSpringExecutor.setAdminAddresses(adminAddresses);
+        glodonJobSpringExecutor.setAppName(appName);
+        glodonJobSpringExecutor.setIp(ip);
+        glodonJobSpringExecutor.setPort(port);
+        glodonJobSpringExecutor.setAccessToken(accessToken);
+        glodonJobSpringExecutor.setLogPath(logPath);
+        glodonJobSpringExecutor.setLogRetentionDays(logRetentionDays);
+        return glodonJobSpringExecutor;
     }
 
     /**

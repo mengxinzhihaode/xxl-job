@@ -37,7 +37,7 @@ public class JFinalCoreConfig extends JFinalConfig {
 		glodonJobExecutor.setAppName(xxlJobProp.get("xxl.job.executor.appname"));
 		glodonJobExecutor.setIp(xxlJobProp.get("xxl.job.executor.ip"));
 		glodonJobExecutor.setPort(xxlJobProp.getInt("xxl.job.executor.port"));
-		glodonJobExecutor.setAccessToken(xxlJobProp.get("xxl.job.accessToken"));
+		glodonJobExecutor.setAccessToken(xxlJobProp.get("glodon.job.accessToken"));
 		glodonJobExecutor.setLogPath(xxlJobProp.get("xxl.job.executor.logpath"));
 		glodonJobExecutor.setLogRetentionDays(xxlJobProp.getInt("xxl.job.executor.logretentiondays"));
 
