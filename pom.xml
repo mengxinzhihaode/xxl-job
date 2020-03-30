@@ -12,7 +12,7 @@
 
 	<modules>
 		<module>glodon-job-core</module>
-		<module>glodon-job-admin</module>
+		<module>glodon-job-web</module>
 		<module>glodon-job-executor-samples</module>
     </modules>
 

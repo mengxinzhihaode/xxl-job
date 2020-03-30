@@ -6,7 +6,7 @@
 		<artifactId>glodon-job</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>glodon-job-admin</artifactId>
+	<artifactId>glodon-job-web</artifactId>
 	<!--
 	<packaging>jar</packaging>
 	-->
@@ -78,7 +78,7 @@
 
 	</dependencies>
 	<build>
-		<finalName>glodon-job-admin</finalName>
+		<finalName>glodon-job-web</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
